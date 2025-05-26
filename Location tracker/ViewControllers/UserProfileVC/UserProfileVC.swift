@@ -9,37 +9,194 @@ import UIKit
 
 class UserProfileVC: UIViewController {
 
+    @IBOutlet private weak var userProfileImageView: UIImageView!
+    @IBOutlet private weak var userNameLabel: UILabel!
+    @IBOutlet private weak var userEmailLabel: UILabel!
+    @IBOutlet private weak var editProfileImageButton: UIButton!
+    @IBOutlet private weak var changePasswordButton: UIButton!
     @IBOutlet private weak var logoutButton: UIButton!
     
-    
+    private let firebaseManager = FirebaseManager()
+    private var photoLibraryManager: PhotoLibraryManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
-
-    @IBAction func logoutButtonTapped(_ sender: Any) {
-        FirebaseManager.shared.logoutUser { [weak self] result in
-                    DispatchQueue.main.async {
-                        switch result {
-                        case .success:
-                            
-                            let loginVC = LoginVC()
-                            loginVC.modalPresentationStyle = .fullScreen
-                            self?.present(loginVC, animated: true)
-                            
-                        case .failure(let error):
-                            self?.showAlert(message: error.localizedDescription)
-                        }
-                    }
-                }
+        setupUI()
+        loadUserProfile()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        setupUserProfileImageView()
+    }
+    
+    // MARK: - Buttons actions
+    @IBAction private func changePassButtonTapped(_ sender: Any) {
+        handlePasswordChange()
+    }
 
-    private func showAlert(message: String) {
-            let alert = UIAlertController(title: "Logout Error", message: message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
+    @IBAction private func editProfileImageButtonTapped(_ sender: Any) {
+        photoLibraryManager = PhotoLibraryManager(presentingViewController: self, delegate: self)
+        photoLibraryManager?.requestAccessAndPresentPicker()
+    }
+    
+    @IBAction private func logoutButtonTapped(_ sender: Any) {
+        handleLogoutButtonTapped()
+    }
+    
+    // MARK: - Private helper methods
+    private func loadUserProfile() {
+        firebaseManager.fetchCurrentUserProfile { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+
+                switch result {
+                case .success(let userData):
+                    self.configureUI(with: userData)
+                case .failure(let error):
+                    AlertFactory.showSimpleAlertWithOK(on: self, title: "Error", message: error.localizedDescription)
+                }
+            }
         }
+    }
+    
+    private func configureUI(with userData: UserProfileViewModel) {
+        userNameLabel.text = userData.userName.isEmpty ? "User" : userData.userName
+        userEmailLabel.text = userData.email
+        updateUserProfileImage(from: userData.imageURL)
+    }
+    
+    private func updateUserProfileImage(from urlString: String) {
+        guard !urlString.isEmpty, let url = URL(string: urlString) else {
+            userProfileImageView.image = UIImage(systemName: "person.fill")
+            return
+        }
+        userProfileImageView.loadImage(from: url)
+    }
+    
+    private func uploadSelectedProfileImage(_ image: UIImage) {
+        firebaseManager.uploadProfileImage(image) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                switch result {
+                case .success(_):
+                    AlertFactory.showTemporaryAlert(on: self, message: "Profile image updated!")
+                case .failure(let error):
+                    AlertFactory.showSimpleAlertWithOK(on: self, title: "Upload Failed", message: error.localizedDescription)
+                    self.userProfileImageView.image = UIImage(systemName: "person.fill")
+                }
+            }
+        }
+    }
+    
+    private func handleLogoutButtonTapped() {
+        firebaseManager.logoutUser { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    let loginVC = LoginVC()
+                    loginVC.modalPresentationStyle = .fullScreen
+                    self?.present(loginVC, animated: true)
+                case .failure(let error):
+                    guard let self = self else { return }
+                    AlertFactory.showSimpleAlertWithOK(on: self, title: "Something went wrong", message: error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    private func handlePasswordChange() {
+        AlertFactory.showChangePasswordAlert(on: self) { [weak self] currentPassword, newPassword, confirmPassword in
+            guard let self = self else { return }
+
+            switch PasswordValidator.validatePasswordChange(current: currentPassword, new: newPassword, confirm: confirmPassword) {
+            case .success:
+                self.performPasswordChange(currentPassword: currentPassword, newPassword: newPassword)    
+            case .failure(_):
+                AlertFactory.showSimpleAlertWithOK(on: self, title: "Failed", message: "Inputed wrong current password")
+            }
+        }
+    }
+    
+    private func performPasswordChange(currentPassword: String, newPassword: String) {
+        firebaseManager.changePassword(currentPassword: currentPassword, newPassword: newPassword) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                switch result {
+                case .success:
+                    AlertFactory.showTemporaryAlert(on: self, message: "Password changed successfully!")
+                case .failure(let error):
+                    AlertFactory.showSimpleAlertWithOK(on: self, title: "Error", message: error.localizedDescription)
+                }
+            }
+        }
+    }
+}
+    
+// MARK: - UIImagePickerControllerDelegate methods
+extension UserProfileVC:   UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true)
+
+        var selectedImage: UIImage?
+
+        if let editedImage = info[.editedImage] as? UIImage {
+            selectedImage = editedImage
+        } else if let originalImage = info[.originalImage] as? UIImage {
+            selectedImage = originalImage
+        }
+
+        guard let image = selectedImage else { return }
+        userProfileImageView.image = image
+        uploadSelectedProfileImage(image)
+    }
+
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+}
+
+// MARK: - Setup UI
+extension UserProfileVC {
+    
+    private func setupUI() {
+        setupUserNameLabel()
+        setupUserEmailLabel()
+        setupEditProfileImageButton()
+        setupChangePasswordButton()
+        setupLogoutButton()
+    }
+
+    private func setupUserProfileImageView() {
+        userProfileImageView.backgroundColor = .white
+        userProfileImageView.contentMode = .scaleAspectFill
+        userProfileImageView.clipsToBounds = true
+        userProfileImageView.layer.cornerRadius = userProfileImageView.frame.width / 2
+        userProfileImageView.layer.borderWidth = 1
+        userProfileImageView.layer.borderColor = UIColor.white.cgColor
+    }
+    
+    private func setupUserNameLabel() {
+        userNameLabel.text = ""
+        userNameLabel.font = UIFont(name: "Roboto-Bold", size: 28)
+    }
+    
+    private func setupUserEmailLabel() {
+        userEmailLabel.text = ""
+        userEmailLabel.font = UIFont(name: "Roboto-Medium", size: 20)
+    }
+    
+    private func setupEditProfileImageButton() {
+        editProfileImageButton.setTitle("Edit profile image", for: .normal)
+    }
+    
+    private func setupChangePasswordButton() {
+        changePasswordButton.setTitle("Change Password", for: .normal)
+    }
+    
+    private func setupLogoutButton() {
+        logoutButton.setTitle("Logout", for: .normal)
+        logoutButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: 22)
+    }
 }

@@ -9,52 +9,75 @@ import UIKit
 
 class SignUpVC: UIViewController {
 
-    @IBOutlet weak var userNameTF: UITextField!
-    @IBOutlet weak var userEmailTF: UITextField!
-    @IBOutlet weak var createPasswordTF: UITextField!
-    @IBOutlet weak var confirmPasswordTF: UITextField!
-    @IBOutlet weak var signUpButton: UIButton!
+    @IBOutlet private weak var userNameTF: UITextField!
+    @IBOutlet private weak var userEmailTF: UITextField!
+    @IBOutlet private weak var createPasswordTF: UITextField!
+    @IBOutlet private weak var confirmPasswordTF: UITextField!
+    @IBOutlet private weak var signUpButton: UIButton!
+    private var signUpActivityIndicator = UIActivityIndicatorView(style: .medium)
+    
+    private let firebaseManager = FirebaseManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setupUI()
     }
     
+    // MARK: - Button's action
     @IBAction func singUpButtonTapped(_ sender: Any) {
-        guard let email = userEmailTF.text, !email.isEmpty,
-                  let password = createPasswordTF.text, !password.isEmpty,
-                  let confirmPassword = confirmPasswordTF.text, !confirmPassword.isEmpty else {
-                showAlert(message: "Please fill all fields")
-                return
-            }
+        signUpUser()
+    }
+    
+    // MARK: - Private helper methods
+    private func signUpUser() {
+        showSignUpLoading(isLoading: true)
 
-            guard password == confirmPassword else {
-                showAlert(message: "Passwords do not match")
-                return
-            }
+        firebaseManager.validateAndRegisterUser(
+            name: userNameTF.text ?? "",
+            email: userEmailTF.text ?? "",
+            password: createPasswordTF.text ?? "",
+            confirmPassword: confirmPasswordTF.text ?? ""
+        ) { [weak self] result in
+            self?.handleSignUpResult(result)
+        }
+    }
+    
+    private func handleSignUpResult(_ result: Result<Void, Error>) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
 
-        FirebaseManager.shared.registerUser(email: email, password: password) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    self?.dismiss(animated: true)
-                case .failure(let error):
-                    self?.showAlert(message: error.localizedDescription)
+            self.showSignUpLoading(isLoading: false)
+
+            switch result {
+            case .success:
+                AlertFactory.showTemporaryAlert(on: self, message: "Successfully signed up!")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self.resetTextFields()
+                    self.dismiss(animated: true)
                 }
+
+            case .failure(let error):
+                AlertFactory.showSimpleAlertWithOK(on: self, title: "Unsuccessful", message: error.localizedDescription)
             }
         }
     }
     
-    private func showAlert(message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
+    private func showSignUpLoading(isLoading: Bool) {
+        if isLoading {
+            signUpButton.isEnabled = false
+            signUpButton.setTitle("Signing Up...", for: .normal)
+            
+            setupSignUpActivityIndicator()
+            signUpActivityIndicator.startAnimating()
+        } else {
+            signUpButton.isEnabled = true
+            signUpButton.setTitle("Sign Up", for: .normal)
+
+            signUpActivityIndicator.stopAnimating()
+            signUpActivityIndicator.removeFromSuperview()
+        }
     }
     
-    
-    
-    // MARK: - Private helper methods
     private func highlightTextField(_ textField: UITextField, isSelected: Bool) {
         if isSelected {
             textField.layer.borderColor = UIColor(red: 0.3529, green: 0.7843, blue: 0.9804, alpha: 1.0).cgColor
@@ -76,6 +99,13 @@ class SignUpVC: UIViewController {
         default:
             return Int.max
         }
+    }
+    
+    private func resetTextFields() {
+        userNameTF.text = ""
+        userEmailTF.text = ""
+        createPasswordTF.text = ""
+        confirmPasswordTF.text = ""
     }
 }
 
@@ -136,6 +166,17 @@ extension SignUpVC {
     private func setupSignUpButton() {
         signUpButton.setTitle("Sign Up", for: .normal)
         signUpButton.titleLabel?.font = UIFont(name: "Roboto-Bold", size: 26)
+    }
+    
+    private func setupSignUpActivityIndicator() {
+        signUpActivityIndicator.color = .white
+        signUpActivityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        signUpButton.addSubview(signUpActivityIndicator)
+
+        NSLayoutConstraint.activate([
+            signUpActivityIndicator.centerYAnchor.constraint(equalTo: signUpButton.centerYAnchor),
+            signUpActivityIndicator.leadingAnchor.constraint(equalTo: signUpButton.titleLabel?.trailingAnchor ?? signUpButton.leadingAnchor, constant: 8)
+        ])
     }
     
     // MARK: - Helpers

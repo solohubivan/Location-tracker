@@ -14,50 +14,80 @@ class LoginVC: UIViewController {
     @IBOutlet private weak var passwordTF: UITextField!
     @IBOutlet private weak var loginButton: UIButton!
     @IBOutlet private weak var singUpLabel: UILabel!
-    @IBOutlet private weak var singUpButton: UIButton!
+    @IBOutlet private weak var signUpButton: UIButton!
+    private var loginActivityIndicator = UIActivityIndicatorView(style: .medium)
+    
+    private let firebaseManager = FirebaseManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupUI()
     }
     
+    // MARK: - Button's actions
     @IBAction func loginButtonTapped(_ sender: Any) {
-        print("Login TAPPED")
-        guard let email = emailTF.text, !email.isEmpty,
-                  let password = passwordTF.text, !password.isEmpty else {
-                showAlert(message: "Please enter email and password")
-                return
-            }
-
-            FirebaseManager.shared.loginUser(email: email, password: password) { [weak self] result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success:
-                        
-                        let tabBarVC = MainTabBarController()
-                        tabBarVC.modalPresentationStyle = .fullScreen
-                        self?.present(tabBarVC, animated: false)
-                        
-                    case .failure(let error):
-                        self?.showAlert(message: error.localizedDescription)
-                    }
-                }
-            }
+        logInUser()
     }
     
     @IBAction func singUpButtonTapped(_ sender: Any) {
+        openSignUpVC()
+    }
+    
+    // MARK: - Private helper methods
+    private func logInUser() {
+        showLoginLoading(isLoading: true)
+        
+        firebaseManager.validateAndLoginUser(
+            email: emailTF.text,
+            password: passwordTF.text
+        ) { [weak self] result in
+            self?.handleLoginResult(result)
+        }
+    }
+    
+    private func handleLoginResult(_ result: Result<Void, Error>) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.showLoginLoading(isLoading: false)
+            
+            switch result {
+            case .success:
+                AlertFactory.showTemporaryAlert(on: self, message: "Successfully logged in!")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self.openMainTabBarController()
+                }
+            case .failure(let error):
+                AlertFactory.showSimpleAlertWithOK(on: self, title: "Login Failed", message: error.localizedDescription)
+            }
+        }
+    }
+    
+    private func showLoginLoading(isLoading: Bool) {
+        if isLoading {
+            loginButton.isEnabled = false
+            loginButton.setTitle("Logging in...", for: .normal)
+            
+            setupLoginActivityIndicator()
+            loginActivityIndicator.startAnimating()
+        } else {
+            loginButton.isEnabled = true
+            loginButton.setTitle("Log In", for: .normal)
+            
+            loginActivityIndicator.stopAnimating()
+            loginActivityIndicator.removeFromSuperview()
+        }
+    }
+    
+    private func openMainTabBarController() {
+        let tabBarVC = MainTabBarController()
+        tabBarVC.modalPresentationStyle = .fullScreen
+        present(tabBarVC, animated: false)
+    }
+    
+    private func openSignUpVC() {
         let vc = SignUpVC()
         vc.modalPresentationStyle = .formSheet
         present(vc, animated: true)
-    }
-    
-    
-    
-    private func showAlert(message: String) {
-        let alert = UIAlertController(title: "Login Error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
     }
 }
 
@@ -104,6 +134,17 @@ extension LoginVC {
         loginButton.setTitleColor(.white, for: .normal)
     }
     
+    private func setupLoginActivityIndicator() {
+        loginActivityIndicator.color = .white
+        loginActivityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        loginButton.addSubview(loginActivityIndicator)
+
+        NSLayoutConstraint.activate([
+            loginActivityIndicator.centerYAnchor.constraint(equalTo: loginButton.centerYAnchor),
+            loginActivityIndicator.leadingAnchor.constraint(equalTo: loginButton.titleLabel?.trailingAnchor ?? loginButton.leadingAnchor, constant: 8)
+        ])
+    }
+    
     private func setupSingUpLabel() {
         singUpLabel.text = "Don't have an account?"
         singUpLabel.font = UIFont(name: "Roboto-Medium", size: 20)
@@ -111,8 +152,8 @@ extension LoginVC {
     }
     
     private func setupSingUpButton() {
-        singUpButton.setTitle("Sing Up!", for: .normal)
-        singUpButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: 22)
+        signUpButton.setTitle("Sign Up!", for: .normal)
+        signUpButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: 22)
     }
     
     // MARK: - Helpers
@@ -120,7 +161,7 @@ extension LoginVC {
         textField.delegate = self
         textField.layer.cornerRadius = 15
         textField.overrideUserInterfaceStyle = .light
-        textField.font = UIFont(name: "Roboto-Regular", size: 18)
+        textField.font = UIFont(name: "Roboto-Medium", size: 20)
         placeholderIndent(textField: textField)
     }
     

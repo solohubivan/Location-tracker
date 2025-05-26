@@ -12,10 +12,9 @@ class MainTabBarController: UITabBarController {
     private let userPartVC = UserPartVC()
     private let managerPartVC = ManagerPartVC()
     private let userProfileVC = UserProfileVC()
-    private var userProfileNavController: UINavigationController!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        userProfileNavController = UINavigationController(rootViewController: userProfileVC)
         setupTabBar()
     }
     
@@ -27,14 +26,18 @@ class MainTabBarController: UITabBarController {
         
         tabBar.overrideUserInterfaceStyle = .light
         
-        let userPartNavController = UINavigationController(rootViewController: userPartVC)
-        userPartNavController.tabBarItem = UITabBarItem(title: "User", image: UIImage(systemName: "location.north.circle"), tag: 0)
+//        let userPartNavController = UINavigationController(rootViewController: userPartVC)
+//        userPartNavController.tabBarItem = UITabBarItem(title: "User", image: UIImage(systemName: "location.north.circle"), tag: 0)
         
-        let managerPartNavController = UINavigationController(rootViewController: managerPartVC)
-        managerPartNavController.tabBarItem = UITabBarItem(title: "Manager", image: UIImage(systemName: "location.magnifyingglass"), tag: 1)
+//        let managerPartNavController = UINavigationController(rootViewController: managerPartVC)
+//        managerPartNavController.tabBarItem = UITabBarItem(title: "Manager", image: UIImage(systemName: "location.magnifyingglass"), tag: 1)
         
-        userProfileNavController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.crop.circle"), tag: 2)
+        userPartVC.tabBarItem = UITabBarItem(title: "User", image: UIImage(systemName: "location.north.circle"), tag: 0)
         
-        viewControllers = [userPartNavController, managerPartNavController, userProfileNavController]
+        managerPartVC.tabBarItem = UITabBarItem(title: "Manager", image: UIImage(systemName: "location.magnifyingglass"), tag: 1)
+        
+        userProfileVC.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.crop.circle"), tag: 2)
+        
+        viewControllers = [userPartVC, managerPartVC, userProfileVC]
     }
 }

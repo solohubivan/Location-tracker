@@ -13,7 +13,7 @@
                 <outlet property="loginButton" destination="ROc-im-poa" id="obi-Kt-sOs"/>
                 <outlet property="mainTitleLabel" destination="XH6-yR-JWH" id="iH3-xi-dNT"/>
                 <outlet property="passwordTF" destination="CNq-lb-odT" id="BEJ-uc-uj2"/>
-                <outlet property="singUpButton" destination="GhK-PA-kBG" id="xuu-Rb-IuB"/>
+                <outlet property="signUpButton" destination="GhK-PA-kBG" id="xuu-Rb-IuB"/>
                 <outlet property="singUpLabel" destination="z56-R9-EMf" id="Z4r-1I-a44"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>

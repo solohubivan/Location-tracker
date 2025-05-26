@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		220280372DDCDD1600000873 /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 220280362DDCDD1600000873 /* GoogleMaps */; };
+		2277D01C2DD9D99A00292DD2 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 2277D01B2DD9D99A00292DD2 /* FirebaseStorage */; };
 		22BFDEB42DCA7819002512AD /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 22BFDEB32DCA7819002512AD /* FirebaseAuth */; };
 		22BFDEB62DCA7819002512AD /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 22BFDEB52DCA7819002512AD /* FirebaseCore */; };
 		22BFDEB82DCA7819002512AD /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 22BFDEB72DCA7819002512AD /* FirebaseDatabase */; };
@@ -74,7 +76,9 @@
 			files = (
 				22BFDEB82DCA7819002512AD /* FirebaseDatabase in Frameworks */,
 				22BFDEBA2DCA7819002512AD /* FirebaseFirestore in Frameworks */,
+				220280372DDCDD1600000873 /* GoogleMaps in Frameworks */,
 				22BFDEB62DCA7819002512AD /* FirebaseCore in Frameworks */,
+				2277D01C2DD9D99A00292DD2 /* FirebaseStorage in Frameworks */,
 				22BFDEB42DCA7819002512AD /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -140,6 +144,8 @@
 				22BFDEB52DCA7819002512AD /* FirebaseCore */,
 				22BFDEB72DCA7819002512AD /* FirebaseDatabase */,
 				22BFDEB92DCA7819002512AD /* FirebaseFirestore */,
+				2277D01B2DD9D99A00292DD2 /* FirebaseStorage */,
+				220280362DDCDD1600000873 /* GoogleMaps */,
 			);
 			productName = "Location tracker";
 			productReference = 22F9D79B2DC54ADB00C856E8 /* Location tracker.app */;
@@ -225,6 +231,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				22BFDEB22DCA7819002512AD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				220280352DDCDD1600000873 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 22F9D79C2DC54ADB00C856E8 /* Products */;
@@ -310,6 +317,9 @@
 				DEVELOPMENT_TEAM = 4D98645N8M;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Location tracker/Info.plist";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Дайте доступ пліз";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to track you on the map.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to add photo for avatar.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -337,6 +347,9 @@
 				DEVELOPMENT_TEAM = 4D98645N8M;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Location tracker/Info.plist";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Дайте доступ пліз";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to track you on the map.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to add photo for avatar.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -589,6 +602,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		220280352DDCDD1600000873 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-maps-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
+		};
 		22BFDEB22DCA7819002512AD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -600,6 +621,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		220280362DDCDD1600000873 /* GoogleMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 220280352DDCDD1600000873 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */;
+			productName = GoogleMaps;
+		};
+		2277D01B2DD9D99A00292DD2 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 22BFDEB22DCA7819002512AD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
 		22BFDEB32DCA7819002512AD /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 22BFDEB22DCA7819002512AD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
