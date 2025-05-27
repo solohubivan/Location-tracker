@@ -3,13 +3,16 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ManagerPartVC" customModule="Location_tracker" customModuleProvider="target">
             <connections>
+                <outlet property="datePicker" destination="5DL-zt-edh" id="isL-rX-Noy"/>
+                <outlet property="largeActivityIndicator" destination="x73-pZ-XZj" id="i0c-CE-Ylf"/>
+                <outlet property="refreshDataButton" destination="uzB-Lu-RIm" id="uqA-76-kHn"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -17,14 +20,73 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KdF-jv-DD3">
+                    <rect key="frame" x="0.0" y="134" width="393" height="40"/>
+                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.80000000000000004" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="x88-Hs-52Z" userLabel="ToolbarView">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="40"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="5DL-zt-edh">
+                                <rect key="frame" x="277" y="3" width="100" height="34.333333333333336"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="dW8-fR-opY"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="datePickerValueChanged:" destination="-1" eventType="valueChanged" id="2VT-PA-mcO"/>
+                                </connections>
+                            </datePicker>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uzB-Lu-RIm" userLabel="refreshDataButton">
+                                <rect key="frame" x="30" y="10" width="30" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="6OC-cP-H5L"/>
+                                    <constraint firstAttribute="height" constant="20" id="pVJ-Mm-lFn"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain">
+                                    <imageReference key="image" image="arrow.clockwise" catalog="system" symbolScale="large"/>
+                                    <color key="baseForegroundColor" red="0.20392158630000001" green="0.40784314269999999" blue="0.68235301969999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="refreshDataButtonTapped:" destination="-1" eventType="touchUpInside" id="6ew-Ph-TqH"/>
+                                </connections>
+                            </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="x73-pZ-XZj">
+                                <rect key="frame" x="227" y="5" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="BZG-di-A3Q"/>
+                                    <constraint firstAttribute="height" constant="30" id="hWR-KW-2QI"/>
+                                </constraints>
+                                <color key="color" red="0.20392158630000001" green="0.40784314269999999" blue="0.68235301969999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="5DL-zt-edh" firstAttribute="leading" secondItem="x73-pZ-XZj" secondAttribute="trailing" constant="20" id="7Bg-ms-zVG"/>
+                            <constraint firstItem="uzB-Lu-RIm" firstAttribute="leading" secondItem="x88-Hs-52Z" secondAttribute="leading" constant="30" id="8di-I5-uDo"/>
+                            <constraint firstItem="x73-pZ-XZj" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="uzB-Lu-RIm" secondAttribute="trailing" constant="20" id="E09-CP-gKn"/>
+                            <constraint firstItem="5DL-zt-edh" firstAttribute="centerY" secondItem="x88-Hs-52Z" secondAttribute="centerY" id="dBi-Vv-d9k"/>
+                            <constraint firstItem="uzB-Lu-RIm" firstAttribute="centerY" secondItem="5DL-zt-edh" secondAttribute="centerY" id="gNQ-zi-MoN"/>
+                            <constraint firstItem="x73-pZ-XZj" firstAttribute="centerY" secondItem="5DL-zt-edh" secondAttribute="centerY" id="oNr-Xk-OLO"/>
+                            <constraint firstAttribute="trailing" secondItem="5DL-zt-edh" secondAttribute="trailing" constant="16" id="qqy-Rv-lhL"/>
+                        </constraints>
+                    </view>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="7za-5R-yXx"/>
+                    </constraints>
+                    <blurEffect style="regular"/>
+                </visualEffectView>
+            </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
-            <color key="backgroundColor" systemColor="systemGreenColor"/>
-            <point key="canvasLocation" x="-33" y="20"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="KdF-jv-DD3" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="ky7-jB-FbW"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="KdF-jv-DD3" secondAttribute="trailing" id="wWo-Xq-J3a"/>
+                <constraint firstItem="KdF-jv-DD3" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="16" id="yeT-eg-16H"/>
+            </constraints>
+            <point key="canvasLocation" x="-34.351145038167935" y="19.718309859154932"/>
         </view>
     </objects>
     <resources>
-        <systemColor name="systemGreenColor">
-            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
+        <image name="arrow.clockwise" catalog="system" width="110" height="128"/>
     </resources>
 </document>

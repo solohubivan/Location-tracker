@@ -16,6 +16,7 @@ class UserPartVC: UIViewController {
     @IBOutlet private weak var sharingLocationStatusLabel: UILabel!
     @IBOutlet private weak var switcherStatusLabel: UILabel!
     @IBOutlet private weak var sharingLocationSwitch: UISwitch!
+    @IBOutlet private weak var locationSettingsButton: UIButton!
     
     private var mapView: GMSMapView!
     
@@ -34,8 +35,17 @@ class UserPartVC: UIViewController {
     @IBAction private func sharingSelfLocationSwitcher(_ sender: Any) {
         if sharingLocationSwitch.isOn {
             locationManager.startUpdatingLocation()
+            updateSharingLocationStatusUI(isSharing: true)
         } else {
             locationManager.stopUpdatingLocation()
+            updateSharingLocationStatusUI(isSharing: false)
+        }
+    }
+    
+    @IBAction private func locationSettingsButtonTapped(_ sender: Any) {
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+        if UIApplication.shared.canOpenURL(settingsURL) {
+            UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
         }
     }
     
@@ -55,39 +65,80 @@ class UserPartVC: UIViewController {
             }
         }
     }
+    
+    private func updateSharingLocationStatusUI(isSharing: Bool) {
+        switcherStatusLabel.text = isSharing ? "Stop sharing" : "Start sharing"
+        sharingLocationStatusLabel.text = isSharing ? "Location sharing is ON" : "Location sharing is OFF"
+        sharingLocationStatusView.backgroundColor = isSharing ? .green : .red
+        statusBarAndSwitchView.backgroundColor = isSharing ? .statusBarActiveBackgroundColor : .white
+        sharingLocationStatusLabel.textColor = isSharing ? .white : .statusBarFontAccentColor
+        switcherStatusLabel.textColor = isSharing ? .white : .statusBarFontAccentColor
+    }
+    
+    private func handleLocationUpdate(_ location: CLLocation) {
+        let now = Date()
+
+        guard let lastUpdate = lastUpdateTime else {
+            performLocationUpdate(with: location, at: now)
+            return
+        }
+
+        guard let lastLoc = lastLocation else {
+            performLocationUpdate(with: location, at: now)
+            return
+        }
+
+        let timePassed = now.timeIntervalSince(lastUpdate) >= 5
+        let distancePassed = location.distance(from: lastLoc) >= 10
+
+        if timePassed || distancePassed {
+            performLocationUpdate(with: location, at: now)
+        }
+    }
+    
+    private func performLocationUpdate(with location: CLLocation, at time: Date) {
+        lastUpdateTime = time
+        lastLocation = location
+        updateMapCamera(to: location.coordinate)
+        saveCurrentLocationToFirebase(location)
+    }
+    
+    private func updateMapCamera(to coordinate: CLLocationCoordinate2D) {
+        let cameraUpdate = GMSCameraUpdate.setTarget(coordinate, zoom: 14)
+        mapView.animate(with: cameraUpdate)
+    }
+    
+    private func updateLocationAuthorizationUI(isAuthorized: Bool) {
+        locationSettingsButton.isHidden = isAuthorized
+        sharingLocationSwitch.isEnabled = isAuthorized
+        switcherStatusLabel.isEnabled = isAuthorized
+        sharingLocationStatusView.isHidden = !isAuthorized
+        sharingLocationStatusLabel.text = isAuthorized ? "Location sharing is OFF" : "Sharing location is disabled"
+    }
 }
 
 // MARK: - CLLocationManagerDelegate
 extension UserPartVC: CLLocationManagerDelegate {
-
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let newLocation = locations.last else { return }
-
-        let now = Date()
-        // force unwrap
-        let timePassed = lastUpdateTime == nil || now.timeIntervalSince(lastUpdateTime!) >= 5
-
-        let distancePassed: Bool
-        if let lastLoc = lastLocation {
-            let distance = newLocation.distance(from: lastLoc)
-            distancePassed = distance >= 10
-        } else {
-            distancePassed = true
-        }
-
-        // Якщо виконано хоча б одну з умов — оновлюємо
-        if timePassed || distancePassed {
-            lastUpdateTime = now
-            lastLocation = newLocation
-            let cameraUpdate = GMSCameraUpdate.setTarget(newLocation.coordinate, zoom: 14)
-            mapView.animate(with: cameraUpdate)
-            
-            saveCurrentLocationToFirebase(newLocation)
-        }
+        handleLocationUpdate(newLocation)
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("Помилка геолокації: \(error.localizedDescription)")
+        AlertFactory.showSimpleAlertWithOK(on: self, title: "Location error", message: "\(error.localizedDescription)")
+    }
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        let status = manager.authorizationStatus
+        let isAuthorized = status == .authorizedAlways
+
+        guard isAuthorized else {
+            AlertFactory.showLocationPermissionAlert(on: self)
+            updateLocationAuthorizationUI(isAuthorized: false)
+            return
+        }
+        updateLocationAuthorizationUI(isAuthorized: true)
     }
 }
 
@@ -101,7 +152,6 @@ extension UserPartVC {
         setupSharingLocationStatusView()
         setupSharingLocationStatusLabel()
         setupSwitcherStatusLabel()
-        setupSharingLocationSwitch()
     }
     
     private func setupGoogleMap() {
@@ -137,20 +187,18 @@ extension UserPartVC {
     private func setupSharingLocationStatusView() {
         sharingLocationStatusView.layer.cornerRadius = sharingLocationStatusView.frame.width / 2
         sharingLocationStatusView.clipsToBounds = true
+        sharingLocationStatusView.backgroundColor = .red
     }
     
     private func setupSharingLocationStatusLabel() {
         sharingLocationStatusLabel.text = "Location not sharing"
         sharingLocationStatusLabel.font = UIFont(name: "Roboto-Medium", size: 17)
+        sharingLocationStatusLabel.textColor = .statusBarFontAccentColor
     }
     
     private func setupSwitcherStatusLabel() {
         switcherStatusLabel.text = "Start sharing"
         switcherStatusLabel.font = UIFont(name: "Roboto-Medium", size: 20)
-    }
-    
-    private func setupSharingLocationSwitch() {
-        
+        switcherStatusLabel.textColor = .statusBarFontAccentColor
     }
 }
-

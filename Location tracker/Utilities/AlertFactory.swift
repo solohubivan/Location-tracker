@@ -88,4 +88,22 @@ final class AlertFactory {
 
         viewController.present(alertController, animated: true)
     }
+    
+    static func showLocationPermissionAlert(on viewController: UIViewController) {
+        let alert = UIAlertController(
+            title: "Location Access Needed",
+            message: "Please allow location access in Settings for the app to work correctly.",
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        alert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { _ in
+            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(settingsURL)
+            }
+        }))
+
+        viewController.present(alert, animated: true)
+    }
 }

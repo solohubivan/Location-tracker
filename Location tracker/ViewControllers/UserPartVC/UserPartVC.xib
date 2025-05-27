@@ -9,6 +9,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UserPartVC" customModule="Location_tracker" customModuleProvider="target">
             <connections>
+                <outlet property="locationSettingsButton" destination="aMY-Ba-m2N" id="GiW-12-A5R"/>
                 <outlet property="sharingLocationStatusLabel" destination="qRN-U0-nWc" id="ORD-CY-fr9"/>
                 <outlet property="sharingLocationStatusView" destination="obY-4h-4AK" id="60j-7G-tRj"/>
                 <outlet property="sharingLocationSwitch" destination="rUF-kJ-k6Q" id="nql-zB-HfT"/>
@@ -51,18 +52,36 @@
                                 <action selector="sharingSelfLocationSwitcher:" destination="-1" eventType="valueChanged" id="Dsg-tj-4jS"/>
                             </connections>
                         </switch>
+                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aMY-Ba-m2N" userLabel="LocationSettingsButton">
+                            <rect key="frame" x="297" y="17" width="20" height="20"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="20" id="6k1-ga-OQS"/>
+                                <constraint firstAttribute="height" constant="20" id="Qja-ua-qbg"/>
+                            </constraints>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" image="gearshape" catalog="system">
+                                <color key="baseForegroundColor" red="0.060785905591954181" green="0.56683093307902688" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </buttonConfiguration>
+                            <connections>
+                                <action selector="locationSettingsButtonTapped:" destination="-1" eventType="touchUpInside" id="Kkh-Cq-rk2"/>
+                                <action selector="sharingSelfLocationSwitcher:" destination="-1" eventType="touchUpInside" id="y46-gR-ZoH"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="qRN-U0-nWc" secondAttribute="trailing" constant="20" id="8LC-r8-qzg"/>
+                        <constraint firstAttribute="trailing" secondItem="aMY-Ba-m2N" secondAttribute="trailing" constant="16" id="HCg-Ox-Duc"/>
                         <constraint firstItem="Hfn-wT-fq6" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Wgs-MF-PUx" secondAttribute="leading" constant="20" id="IYR-Ji-CNw"/>
                         <constraint firstItem="obY-4h-4AK" firstAttribute="top" secondItem="Wgs-MF-PUx" secondAttribute="top" constant="20" id="KGX-LS-939"/>
+                        <constraint firstItem="aMY-Ba-m2N" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="qRN-U0-nWc" secondAttribute="trailing" constant="10" id="M2O-BR-F0j"/>
                         <constraint firstItem="Hfn-wT-fq6" firstAttribute="centerX" secondItem="Wgs-MF-PUx" secondAttribute="centerX" constant="-30" id="M8M-df-un2"/>
                         <constraint firstItem="obY-4h-4AK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Wgs-MF-PUx" secondAttribute="leading" constant="20" id="PCs-vJ-8J1"/>
                         <constraint firstItem="rUF-kJ-k6Q" firstAttribute="leading" secondItem="Hfn-wT-fq6" secondAttribute="trailing" constant="16" id="Rff-Tl-wSy"/>
                         <constraint firstItem="Hfn-wT-fq6" firstAttribute="top" secondItem="qRN-U0-nWc" secondAttribute="bottom" constant="16" id="Zb1-wb-6Ll"/>
                         <constraint firstAttribute="bottom" secondItem="Hfn-wT-fq6" secondAttribute="bottom" constant="20" id="diW-5t-tei"/>
                         <constraint firstItem="qRN-U0-nWc" firstAttribute="leading" secondItem="obY-4h-4AK" secondAttribute="trailing" constant="16" id="gHr-q7-Uh6"/>
+                        <constraint firstItem="aMY-Ba-m2N" firstAttribute="centerY" secondItem="qRN-U0-nWc" secondAttribute="centerY" id="kyA-zb-Boq"/>
                         <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="rUF-kJ-k6Q" secondAttribute="trailing" constant="20" id="mar-DY-Pg9"/>
                         <constraint firstItem="rUF-kJ-k6Q" firstAttribute="centerY" secondItem="Hfn-wT-fq6" secondAttribute="centerY" id="qZP-tl-dWq"/>
                         <constraint firstItem="qRN-U0-nWc" firstAttribute="centerY" secondItem="obY-4h-4AK" secondAttribute="centerY" id="sCm-w4-cTd"/>
@@ -81,4 +100,7 @@
             <point key="canvasLocation" x="49.618320610687022" y="19.718309859154932"/>
         </view>
     </objects>
+    <resources>
+        <image name="gearshape" catalog="system" width="128" height="123"/>
+    </resources>
 </document>

@@ -12,28 +12,44 @@ import UIKit
 
 final class FirebaseManager {
     
-//    func saveUserLocation(latitude: Double, longitude: Double, timestamp: Date, completion: @escaping (Result<Void, Error>) -> Void) {
-//        guard let userId = Auth.auth().currentUser?.uid else {
-//            let error = NSError(domain: "FirebaseManager", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])
-//            completion(.failure(error))
-//            return
-//        }
-//        
-//        let ref = Database.database().reference().child("locations").child(userId).childByAutoId()
-//        let data: [String: Any] = [
-//            "latitude": latitude,
-//            "longitude": longitude,
-//            "timestamp": ISO8601DateFormatter().string(from: timestamp)
-//        ]
-//        
-//        ref.setValue(data) { error, _ in
-//            if let error = error {
-//                completion(.failure(error))
-//            } else {
-//                completion(.success(()))
-//            }
-//        }
-//    }
+    
+   
+    func fetchUserLocations(for date: Date, completion: @escaping ([LocationInfoViewModel]) -> Void) {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("❌ User not authenticated")
+            completion([])
+            return
+        }
+        
+        let ref = Database.database().reference().child("locations").child(userId)
+        
+        ref.observeSingleEvent(of: .value) { snapshot in
+            var result: [LocationInfoViewModel] = []
+            
+            for case let child as DataSnapshot in snapshot.children {
+                guard let dict = child.value as? [String: Any],
+                      let latitude = dict["latitude"] as? Double,
+                      let longitude = dict["longitude"] as? Double,
+                      let timestampString = dict["timestamp"] as? String,
+                      let timestamp = ISO8601DateFormatter().date(from: timestampString)
+                else {
+                    continue
+                }
+                
+                // Порівнюємо тільки дату без часу
+                let calendar = Calendar.current
+                if calendar.isDate(timestamp, inSameDayAs: date) {
+                    result.append(LocationInfoViewModel(latitude: latitude, longitude: longitude, date: timestamp))
+                }
+            }
+            
+            completion(result)
+        }
+    }
+    
+    
+    
+    
     func saveUserLocation(_ viewModel: LocationInfoViewModel, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let userId = Auth.auth().currentUser?.uid else {
             let error = NSError(domain: "FirebaseManager", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])
