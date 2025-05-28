@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class UserProfileVC: UIViewController {
 
@@ -41,11 +42,17 @@ class UserProfileVC: UIViewController {
     }
     
     @IBAction private func logoutButtonTapped(_ sender: Any) {
+        CacheManager().clear()
         handleLogoutButtonTapped()
     }
     
     // MARK: - Private helper methods
     private func loadUserProfile() {
+        
+        if let cached = CacheManager().load() {
+            configureUI(with: cached)
+        }
+        
         firebaseManager.fetchCurrentUserProfile { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
@@ -53,25 +60,35 @@ class UserProfileVC: UIViewController {
                 switch result {
                 case .success(let userData):
                     self.configureUI(with: userData)
+                    CacheManager().save(profile: userData)
                 case .failure(let error):
-                    AlertFactory.showSimpleAlertWithOK(on: self, title: "Error", message: error.localizedDescription)
+                    AlertFactory.showSimpleAlertWithOK(
+                        on: self,
+                        title: AppConstants.AlertMessages.error,
+                        message: error.localizedDescription
+                    )
                 }
             }
         }
     }
     
     private func configureUI(with userData: UserProfileViewModel) {
-        userNameLabel.text = userData.userName.isEmpty ? "User" : userData.userName
+        userNameLabel.text = userData.userName.isEmpty ? AppConstants.UserProfileVC.userNameLabelText : userData.userName
         userEmailLabel.text = userData.email
         updateUserProfileImage(from: userData.imageURL)
     }
     
     private func updateUserProfileImage(from urlString: String) {
-        guard !urlString.isEmpty, let url = URL(string: urlString) else {
-            userProfileImageView.image = UIImage(systemName: "person.fill")
+        guard let url = URL(string: urlString) else {
+            userProfileImageView.image = UIImage(systemName: AppConstants.ImagesNames.personFill)
             return
         }
-        userProfileImageView.loadImage(from: url)
+
+        userProfileImageView.sd_setImage(
+            with: url,
+            placeholderImage: UIImage(systemName: AppConstants.ImagesNames.personFill),
+            options: [.continueInBackground, .highPriority]
+        )
     }
     
     private func uploadSelectedProfileImage(_ image: UIImage) {
@@ -80,10 +97,10 @@ class UserProfileVC: UIViewController {
                 guard let self = self else { return }
                 switch result {
                 case .success(_):
-                    AlertFactory.showTemporaryAlert(on: self, message: "Profile image updated!")
+                    AlertFactory.showTemporaryAlert(on: self, message: AppConstants.AlertMessages.profileImageUpdated)
                 case .failure(let error):
-                    AlertFactory.showSimpleAlertWithOK(on: self, title: "Upload Failed", message: error.localizedDescription)
-                    self.userProfileImageView.image = UIImage(systemName: "person.fill")
+                    AlertFactory.showSimpleAlertWithOK(on: self, title: AppConstants.AlertMessages.uploadFailed, message: error.localizedDescription)
+                    self.userProfileImageView.image = UIImage(systemName: AppConstants.ImagesNames.personFill)
                 }
             }
         }
@@ -99,7 +116,7 @@ class UserProfileVC: UIViewController {
                     self?.present(loginVC, animated: true)
                 case .failure(let error):
                     guard let self = self else { return }
-                    AlertFactory.showSimpleAlertWithOK(on: self, title: "Something went wrong", message: error.localizedDescription)
+                    AlertFactory.showSimpleAlertWithOK(on: self, title: AppConstants.AlertMessages.somethingWentWrong, message: error.localizedDescription)
                 }
             }
         }
@@ -113,7 +130,7 @@ class UserProfileVC: UIViewController {
             case .success:
                 self.performPasswordChange(currentPassword: currentPassword, newPassword: newPassword)    
             case .failure(_):
-                AlertFactory.showSimpleAlertWithOK(on: self, title: "Failed", message: "Inputed wrong current password")
+                AlertFactory.showSimpleAlertWithOK(on: self, title: AppConstants.AlertMessages.failed, message: AppConstants.AlertMessages.inputedWrongCurrentPass)
             }
         }
     }
@@ -124,9 +141,9 @@ class UserProfileVC: UIViewController {
                 guard let self = self else { return }
                 switch result {
                 case .success:
-                    AlertFactory.showTemporaryAlert(on: self, message: "Password changed successfully!")
+                    AlertFactory.showTemporaryAlert(on: self, message: AppConstants.AlertMessages.passChangedSuccessfully)
                 case .failure(let error):
-                    AlertFactory.showSimpleAlertWithOK(on: self, title: "Error", message: error.localizedDescription)
+                    AlertFactory.showSimpleAlertWithOK(on: self, title: AppConstants.AlertMessages.error, message: error.localizedDescription)
                 }
             }
         }
@@ -179,24 +196,24 @@ extension UserProfileVC {
     
     private func setupUserNameLabel() {
         userNameLabel.text = ""
-        userNameLabel.font = UIFont(name: "Roboto-Bold", size: 28)
+        userNameLabel.font = UIFont(name: AppConstants.Fonts.robotoBold, size: 28)
     }
     
     private func setupUserEmailLabel() {
         userEmailLabel.text = ""
-        userEmailLabel.font = UIFont(name: "Roboto-Medium", size: 20)
+        userEmailLabel.font = UIFont(name: AppConstants.Fonts.robotoMedium, size: 20)
     }
     
     private func setupEditProfileImageButton() {
-        editProfileImageButton.setTitle("Edit profile image", for: .normal)
+        editProfileImageButton.setTitle(AppConstants.ButtonsTitles.editProfileImageButtonText, for: .normal)
     }
     
     private func setupChangePasswordButton() {
-        changePasswordButton.setTitle("Change Password", for: .normal)
+        changePasswordButton.setTitle(AppConstants.ButtonsTitles.changePasswordButtonText, for: .normal)
     }
     
     private func setupLogoutButton() {
-        logoutButton.setTitle("Logout", for: .normal)
-        logoutButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: 22)
+        logoutButton.setTitle(AppConstants.ButtonsTitles.logoutButtonText, for: .normal)
+        logoutButton.titleLabel?.font = UIFont(name: AppConstants.Fonts.robotoMedium, size: 22)
     }
 }

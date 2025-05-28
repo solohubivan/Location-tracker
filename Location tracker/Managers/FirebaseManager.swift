@@ -11,73 +11,59 @@ import FirebaseStorage
 import UIKit
 
 final class FirebaseManager {
-    
-    
-   
+
+    // MARK: - Firebase Internal Utilities
     func fetchUserLocations(for date: Date, completion: @escaping ([LocationInfoViewModel]) -> Void) {
-        guard let userId = Auth.auth().currentUser?.uid else {
-            print("❌ User not authenticated")
+        guard let userId = getCurrentUserId() else {
             completion([])
             return
         }
-        
+
         let ref = Database.database().reference().child("locations").child(userId)
-        
+
         ref.observeSingleEvent(of: .value) { snapshot in
             var result: [LocationInfoViewModel] = []
-            
+
             for case let child as DataSnapshot in snapshot.children {
                 guard let dict = child.value as? [String: Any],
                       let latitude = dict["latitude"] as? Double,
                       let longitude = dict["longitude"] as? Double,
                       let timestampString = dict["timestamp"] as? String,
-                      let timestamp = ISO8601DateFormatter().date(from: timestampString)
-                else {
+                      let timestamp = ISO8601DateFormatter().date(from: timestampString) else {
                     continue
                 }
-                
-                // Порівнюємо тільки дату без часу
+
                 let calendar = Calendar.current
                 if calendar.isDate(timestamp, inSameDayAs: date) {
                     result.append(LocationInfoViewModel(latitude: latitude, longitude: longitude, date: timestamp))
                 }
             }
-            
+
             completion(result)
         }
     }
-    
-    
-    
-    
+
     func saveUserLocation(_ viewModel: LocationInfoViewModel, completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let userId = Auth.auth().currentUser?.uid else {
-            let error = NSError(domain: "FirebaseManager", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])
-            completion(.failure(error))
+        guard let userId = getCurrentUserId() else {
+            completion(.failure(userAuthError))
             return
         }
-        
+
         let ref = Database.database().reference().child("locations").child(userId).childByAutoId()
         let data: [String: Any] = [
             "latitude": viewModel.latitude,
             "longitude": viewModel.longitude,
             "timestamp": ISO8601DateFormatter().string(from: viewModel.date)
         ]
-        
+
         ref.setValue(data) { error, _ in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                completion(.success(()))
-            }
+            error != nil ? completion(.failure(error!)) : completion(.success(()))
         }
     }
-    
+
     func changePassword(currentPassword: String, newPassword: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let user = Auth.auth().currentUser,
-              let email = user.email else {
-            let error = NSError(domain: "FirebaseManager", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])
-            completion(.failure(error))
+        guard let user = Auth.auth().currentUser, let email = user.email else {
+            completion(.failure(userAuthError))
             return
         }
 
@@ -90,49 +76,42 @@ final class FirebaseManager {
             }
 
             user.updatePassword(to: newPassword) { error in
-                if let error = error {
-                    completion(.failure(error))
-                } else {
-                    completion(.success(()))
-                }
+                error != nil ? completion(.failure(error!)) : completion(.success(()))
             }
         }
     }
-    
+
     func fetchCurrentUserProfile(completion: @escaping (Result<UserProfileViewModel, Error>) -> Void) {
-        guard let userId = Auth.auth().currentUser?.uid else {
-            let error = NSError(domain: "FirebaseManager", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])
-            completion(.failure(error))
+        guard let userId = getCurrentUserId() else {
+            completion(.failure(userAuthError))
             return
         }
 
         let ref = Database.database().reference().child("users").child(userId)
         ref.observeSingleEvent(of: .value) { snapshot in
             guard let userData = snapshot.value as? [String: Any] else {
-                let error = NSError(domain: "FirebaseManager", code: 404, userInfo: [NSLocalizedDescriptionKey: "User data not found"])
-                completion(.failure(error))
+                completion(.failure(NSError(domain: "FirebaseManager", code: 404, userInfo: [NSLocalizedDescriptionKey: "User data not found"])))
                 return
             }
-            
+
             let profile = UserProfileViewModel(
                 userName: userData["name"] as? String ?? "",
                 email: userData["email"] as? String ?? "",
                 imageURL: userData["profileImageURL"] as? String ?? ""
             )
-            
+
             completion(.success(profile))
         }
     }
-    
+
     func uploadProfileImage(_ image: UIImage, completion: @escaping (Result<URL, Error>) -> Void) {
         guard let imageData = image.jpegData(compressionQuality: 0.75),
-              let userId = Auth.auth().currentUser?.uid else {
-            let error = NSError(domain: "FirebaseManager", code: 500, userInfo: [NSLocalizedDescriptionKey: "Invalid image or user not found"])
-            completion(.failure(error))
+              let userId = getCurrentUserId() else {
+            completion(.failure(NSError(domain: "FirebaseManager", code: 500, userInfo: [NSLocalizedDescriptionKey: "Invalid image or user not found"])))
             return
         }
 
-        let storageRef = Storage.storage().reference().child("profile_images/\(userId).jpg")
+        let storageRef = getProfileImageRef(for: userId)
 
         storageRef.putData(imageData, metadata: nil) { _, error in
             if let error = error {
@@ -149,47 +128,7 @@ final class FirebaseManager {
             }
         }
     }
-    
-    func validateAndRegisterUser(
-        name: String,
-        email: String,
-        password: String,
-        confirmPassword: String,
-        completion: @escaping (Result<Void, Error>) -> Void
-    ) {
-        switch validatePassword(password, confirmPassword) {
-        case .failure(let error):
-            completion(.failure(error))
-            return
-        case .success:
-            break
-        }
 
-        guard !email.isEmpty, !email.contains(" ") else {
-            completion(.failure(SignUpUserValidationError.emptyEmail))
-            return
-        }
-
-        registerToFirebaseUser(name: name, email: email, password: password, completion: completion)
-    }
-    
-    func validateAndLoginUser(email: String?,
-                              password: String?,
-                              completion: @escaping (Result<Void, Error>) -> Void) {
-        
-        guard let email = email, !email.isEmpty, let password = password, !password.isEmpty else {
-            completion(.failure(LoginValidationError.emptyFields))
-            return
-        }
-
-        guard isValidEmail(email) else {
-            completion(.failure(LoginValidationError.invalidEmailFormat))
-            return
-        }
-
-        loginUser(email: email, password: password, completion: completion)
-    }
-    
     func logoutUser(completion: @escaping (Result<Void, Error>) -> Void) {
         do {
             try Auth.auth().signOut()
@@ -198,30 +137,78 @@ final class FirebaseManager {
             completion(.failure(error))
         }
     }
+
+    func validateAndRegisterUser(
+        name: String,
+        email: String,
+        password: String,
+        confirmPassword: String,
+        completion: @escaping (Result<Void, Error>) -> Void
+    ) {
+        switch ValidationManager.validateSignUp(email: email, password: password, confirmPassword: confirmPassword) {
+        case .success:
+            registerToFirebaseUser(name: name, email: email, password: password, completion: completion)
+        case .failure(let error):
+            completion(.failure(error))
+        }
+    }
     
-    // MARK: - Private methods
-    
+    func validateAndLoginUser(
+        email: String?,
+        password: String?,
+        completion: @escaping (Result<Void, Error>) -> Void
+    ) {
+        switch ValidationManager.validateLogin(email: email, password: password) {
+        case .success:
+            
+            loginUser(email: email!, password: password!) { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success:
+                    self.fetchCurrentUserProfile { profileResult in
+                        if case .success(let profile) = profileResult {
+                            CacheManager().save(profile: profile)
+                        }
+                    }
+                    completion(.success(()))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+
+        case .failure(let error):
+            completion(.failure(error))
+        }
+    }
+
+    // MARK: - Private helpers
+
+    private func getCurrentUserId() -> String? {
+        Auth.auth().currentUser?.uid
+    }
+
+    private var userAuthError: NSError {
+        NSError(domain: "FirebaseManager", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])
+    }
+
+    private func getProfileImageRef(for userId: String) -> StorageReference {
+        Storage.storage().reference().child("profile_images/\(userId).jpg")
+    }
+
     private func saveProfileImageURL(userId: String, imageURL: URL, completion: @escaping (Result<URL, Error>) -> Void) {
         let ref = Database.database().reference().child("users").child(userId).child("profileImageURL")
         ref.setValue(imageURL.absoluteString) { error, _ in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                completion(.success(imageURL))
-            }
+            error != nil ? completion(.failure(error!)) : completion(.success(imageURL))
         }
     }
-    
+
     private func loginUser(email: String, password: String, completion: @escaping (Result<Void, Error>) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { _, error in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                completion(.success(()))
-            }
+            error != nil ? completion(.failure(error!)) : completion(.success(()))
         }
     }
-    
+
     private func registerToFirebaseUser(name: String, email: String, password: String, completion: @escaping (Result<Void, Error>) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
             if let error = error {
@@ -230,14 +217,11 @@ final class FirebaseManager {
             }
 
             guard let user = authResult?.user else {
-                let error = NSError(domain: "FirebaseManager", code: 500, userInfo: [NSLocalizedDescriptionKey: "User creation failed"])
-                completion(.failure(error))
+                completion(.failure(NSError(domain: "FirebaseManager", code: 500, userInfo: [NSLocalizedDescriptionKey: "User creation failed"])))
                 return
             }
 
-            self.saveUserData(userId: user.uid, name: name, email: email) { result in
-                completion(result)
-            }
+            self.saveUserData(userId: user.uid, name: name, email: email, completion: completion)
         }
     }
 
@@ -249,39 +233,7 @@ final class FirebaseManager {
         ]
 
         ref.setValue(userData) { error, _ in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                completion(.success(()))
-            }
+            error != nil ? completion(.failure(error!)) : completion(.success(()))
         }
-    }
-    
-    
-    // прибрати звідси
-    private func isValidEmail(_ email: String) -> Bool {
-        return email.contains("@") && email.contains(".")
-    }
-    
-    
-    private func validatePassword(_ password: String?, _ confirmPassword: String?) -> Result<Void, SignUpUserValidationError> {
-        guard let password = password, !password.isEmpty,
-              let confirmPassword = confirmPassword, !confirmPassword.isEmpty else {
-            return .failure(.emptyFields)
-        }
-
-        guard password == confirmPassword else {
-            return .failure(.passwordsDoNotMatch)
-        }
-
-        guard password.count >= 6 else {
-            return .failure(.passwordTooShort)
-        }
-
-        guard !password.contains(" ") else {
-            return .failure(.passwordContainsSpaces)
-        }
-
-        return .success(())
     }
 }

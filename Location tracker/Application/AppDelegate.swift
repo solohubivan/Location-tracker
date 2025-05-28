@@ -13,25 +13,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-//        GMSServices.provideAPIKey("AIzaSyD9Am0UJLwMMa-UBa6X-lm5MjK0-gBF8h4")
-//        return true
-        if let apiKey = loadAPIKey() {
-                    GMSServices.provideAPIKey(apiKey)
-                } else {
-                    fatalError("❌ Google Maps API Key not found in Config.plist")
-                }
-                
-                return true
+        GMSServices.provideAPIKey(AppConfig.googleMapsAPIKey())
+        return true
     }
-    
-    // винести кудись
-    private func loadAPIKey() -> String? {
-            guard let path = Bundle.main.path(forResource: "Config", ofType: "plist"),
-                  let plist = NSDictionary(contentsOfFile: path),
-                  let value = plist["GoogleMapsAPIKey"] as? String else {
-                return nil
-            }
-            return value
-        }
 }
 

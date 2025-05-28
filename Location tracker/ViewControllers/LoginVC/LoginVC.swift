@@ -52,12 +52,12 @@ class LoginVC: UIViewController {
             
             switch result {
             case .success:
-                AlertFactory.showTemporaryAlert(on: self, message: "Successfully logged in!")
+                AlertFactory.showTemporaryAlert(on: self, message: AppConstants.AlertMessages.successfullyLoggedIn)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     self.openMainTabBarController()
                 }
             case .failure(let error):
-                AlertFactory.showSimpleAlertWithOK(on: self, title: "Login Failed", message: error.localizedDescription)
+                AlertFactory.showSimpleAlertWithOK(on: self, title: AppConstants.AlertMessages.loginFailed, message: error.localizedDescription)
             }
         }
     }
@@ -65,13 +65,13 @@ class LoginVC: UIViewController {
     private func showLoginLoading(isLoading: Bool) {
         if isLoading {
             loginButton.isEnabled = false
-            loginButton.setTitle("Logging in...", for: .normal)
+            loginButton.setTitle(AppConstants.ButtonsTitles.loginButtonLoadingText, for: .normal)
             
             setupLoginActivityIndicator()
             loginActivityIndicator.startAnimating()
         } else {
             loginButton.isEnabled = true
-            loginButton.setTitle("Log In", for: .normal)
+            loginButton.setTitle(AppConstants.ButtonsTitles.loginButtonText, for: .normal)
             
             loginActivityIndicator.stopAnimating()
             loginActivityIndicator.removeFromSuperview()
@@ -124,13 +124,13 @@ extension LoginVC {
     }
     
     private func setupMainTitleLabel() {
-        mainTitleLabel.text = "Location tracker"
-        mainTitleLabel.font = UIFont(name: "Roboto-Bold", size: 40)
+        mainTitleLabel.text = AppConstants.LoginVC.mainTitleLabelText
+        mainTitleLabel.font = UIFont(name: AppConstants.Fonts.robotoBold, size: 40)
     }
     
     private func setupLoginButton() {
-        loginButton.setTitle("Log In", for: .normal)
-        loginButton.titleLabel?.font = UIFont(name: "Roboto-Bold", size: 24)
+        loginButton.setTitle(AppConstants.ButtonsTitles.loginButtonText, for: .normal)
+        loginButton.titleLabel?.font = UIFont(name: AppConstants.Fonts.robotoBold, size: 24)
         loginButton.setTitleColor(.white, for: .normal)
     }
     
@@ -146,14 +146,14 @@ extension LoginVC {
     }
     
     private func setupSingUpLabel() {
-        singUpLabel.text = "Don't have an account?"
-        singUpLabel.font = UIFont(name: "Roboto-Medium", size: 20)
+        singUpLabel.text = AppConstants.LoginVC.singUpLabelText
+        singUpLabel.font = UIFont(name: AppConstants.Fonts.robotoMedium, size: 20)
         singUpLabel.textColor = .black
     }
     
     private func setupSingUpButton() {
-        signUpButton.setTitle("Sign Up!", for: .normal)
-        signUpButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: 22)
+        signUpButton.setTitle(AppConstants.ButtonsTitles.singUpButtonText, for: .normal)
+        signUpButton.titleLabel?.font = UIFont(name: AppConstants.Fonts.robotoMedium, size: 22)
     }
     
     // MARK: - Helpers
@@ -161,7 +161,7 @@ extension LoginVC {
         textField.delegate = self
         textField.layer.cornerRadius = 15
         textField.overrideUserInterfaceStyle = .light
-        textField.font = UIFont(name: "Roboto-Medium", size: 20)
+        textField.font = UIFont(name: AppConstants.Fonts.robotoMedium, size: 20)
         placeholderIndent(textField: textField)
     }
     

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		220280372DDCDD1600000873 /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 220280362DDCDD1600000873 /* GoogleMaps */; };
 		2277D01C2DD9D99A00292DD2 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 2277D01B2DD9D99A00292DD2 /* FirebaseStorage */; };
+		229BCA0C2DE5FB3C002DE12C /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 229BCA0B2DE5FB3C002DE12C /* SDWebImage */; };
 		22BFDEB42DCA7819002512AD /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 22BFDEB32DCA7819002512AD /* FirebaseAuth */; };
 		22BFDEB62DCA7819002512AD /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 22BFDEB52DCA7819002512AD /* FirebaseCore */; };
 		22BFDEB82DCA7819002512AD /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 22BFDEB72DCA7819002512AD /* FirebaseDatabase */; };
@@ -77,6 +78,7 @@
 				22BFDEB82DCA7819002512AD /* FirebaseDatabase in Frameworks */,
 				22BFDEBA2DCA7819002512AD /* FirebaseFirestore in Frameworks */,
 				220280372DDCDD1600000873 /* GoogleMaps in Frameworks */,
+				229BCA0C2DE5FB3C002DE12C /* SDWebImage in Frameworks */,
 				22BFDEB62DCA7819002512AD /* FirebaseCore in Frameworks */,
 				2277D01C2DD9D99A00292DD2 /* FirebaseStorage in Frameworks */,
 				22BFDEB42DCA7819002512AD /* FirebaseAuth in Frameworks */,
@@ -146,6 +148,7 @@
 				22BFDEB92DCA7819002512AD /* FirebaseFirestore */,
 				2277D01B2DD9D99A00292DD2 /* FirebaseStorage */,
 				220280362DDCDD1600000873 /* GoogleMaps */,
+				229BCA0B2DE5FB3C002DE12C /* SDWebImage */,
 			);
 			productName = "Location tracker";
 			productReference = 22F9D79B2DC54ADB00C856E8 /* Location tracker.app */;
@@ -232,6 +235,7 @@
 			packageReferences = (
 				22BFDEB22DCA7819002512AD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				220280352DDCDD1600000873 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
+				229BCA0A2DE5FB3C002DE12C /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 22F9D79C2DC54ADB00C856E8 /* Products */;
@@ -610,6 +614,14 @@
 				minimumVersion = 10.0.0;
 			};
 		};
+		229BCA0A2DE5FB3C002DE12C /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.21.0;
+			};
+		};
 		22BFDEB22DCA7819002512AD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -630,6 +642,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 22BFDEB22DCA7819002512AD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		229BCA0B2DE5FB3C002DE12C /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 229BCA0A2DE5FB3C002DE12C /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
 		};
 		22BFDEB32DCA7819002512AD /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;

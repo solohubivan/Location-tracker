@@ -61,14 +61,14 @@ class UserPartVC: UIViewController {
             switch result {
             case .success: break
             case .failure(let error):
-                AlertFactory.showSimpleAlertWithOK(on: self, title: "Saving location error", message: "\(error.localizedDescription)")
+                AlertFactory.showSimpleAlertWithOK(on: self, title: AppConstants.AlertMessages.savingLocationError, message: "\(error.localizedDescription)")
             }
         }
     }
     
     private func updateSharingLocationStatusUI(isSharing: Bool) {
-        switcherStatusLabel.text = isSharing ? "Stop sharing" : "Start sharing"
-        sharingLocationStatusLabel.text = isSharing ? "Location sharing is ON" : "Location sharing is OFF"
+        switcherStatusLabel.text = isSharing ? AppConstants.UserPartVC.stopSwitcherStatusLabelText : AppConstants.UserPartVC.startSwitcherStatusLabelText
+        sharingLocationStatusLabel.text = isSharing ? AppConstants.UserPartVC.onSharingLocationStatusLabelText : AppConstants.UserPartVC.offSharingLocationStatusLabelText
         sharingLocationStatusView.backgroundColor = isSharing ? .green : .red
         statusBarAndSwitchView.backgroundColor = isSharing ? .statusBarActiveBackgroundColor : .white
         sharingLocationStatusLabel.textColor = isSharing ? .white : .statusBarFontAccentColor
@@ -113,7 +113,7 @@ class UserPartVC: UIViewController {
         sharingLocationSwitch.isEnabled = isAuthorized
         switcherStatusLabel.isEnabled = isAuthorized
         sharingLocationStatusView.isHidden = !isAuthorized
-        sharingLocationStatusLabel.text = isAuthorized ? "Location sharing is OFF" : "Sharing location is disabled"
+        sharingLocationStatusLabel.text = isAuthorized ? AppConstants.UserPartVC.offSharingLocationStatusLabelText : AppConstants.UserPartVC.disabledSharingLocationStatusLabelText
     }
 }
 
@@ -126,7 +126,7 @@ extension UserPartVC: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        AlertFactory.showSimpleAlertWithOK(on: self, title: "Location error", message: "\(error.localizedDescription)")
+        AlertFactory.showSimpleAlertWithOK(on: self, title: AppConstants.AlertMessages.locationError, message: "\(error.localizedDescription)")
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -191,14 +191,14 @@ extension UserPartVC {
     }
     
     private func setupSharingLocationStatusLabel() {
-        sharingLocationStatusLabel.text = "Location not sharing"
-        sharingLocationStatusLabel.font = UIFont(name: "Roboto-Medium", size: 17)
+        sharingLocationStatusLabel.text = AppConstants.UserPartVC.sharingLocationStatusLabelText
+        sharingLocationStatusLabel.font = UIFont(name: AppConstants.Fonts.robotoMedium, size: 17)
         sharingLocationStatusLabel.textColor = .statusBarFontAccentColor
     }
     
     private func setupSwitcherStatusLabel() {
-        switcherStatusLabel.text = "Start sharing"
-        switcherStatusLabel.font = UIFont(name: "Roboto-Medium", size: 20)
+        switcherStatusLabel.text = AppConstants.UserPartVC.switcherStatusLabelText
+        switcherStatusLabel.font = UIFont(name: AppConstants.Fonts.robotoMedium, size: 20)
         switcherStatusLabel.textColor = .statusBarFontAccentColor
     }
 }

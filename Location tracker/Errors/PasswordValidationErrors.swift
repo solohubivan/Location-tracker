@@ -16,13 +16,13 @@ enum PasswordValidationErrors: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .emptyFields:
-            return "Please fill in all fields."
+            return AppConstants.ErrorDescription.emptyFields2
         case .passwordsDoNotMatch:
-            return "Passwords do not match."
+            return AppConstants.ErrorDescription.passwordsDoNotMatch
         case .passwordTooShort:
-            return "Password must be at least 6 characters."
+            return AppConstants.ErrorDescription.passwordTooShort
         case .passwordContainsSpaces:
-            return "Password must not contain spaces."
+            return AppConstants.ErrorDescription.passwordContainsSpaces
         }
     }
 }

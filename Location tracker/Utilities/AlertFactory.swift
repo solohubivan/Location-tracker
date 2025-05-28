@@ -21,18 +21,18 @@ final class AlertFactory {
     
     static func showSimpleAlertWithOK(on viewController: UIViewController, title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: AppConstants.AlertFactory.oKButtonText, style: .default))
         viewController.present(alert, animated: true)
     }
     
     static func showSettingsAlert(on viewController: UIViewController,
-                                  title: String = "Access Denied",
-                                  message: String = "Go to Settings and allow access to Photos") {
+                                  title: String = AppConstants.AlertFactory.settingsAlertTitleText,
+                                  message: String = AppConstants.AlertFactory.settingsAlertMessageText) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: AppConstants.AlertFactory.cancelButtonText, style: .cancel))
 
-        alert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { _ in
+        alert.addAction(UIAlertAction(title: AppConstants.AlertFactory.settingsButtonText, style: .default, handler: { _ in
             if let url = URL(string: UIApplication.openSettingsURLString) {
                 UIApplication.shared.open(url)
             }
@@ -44,31 +44,31 @@ final class AlertFactory {
     static func showChangePasswordAlert(on viewController: UIViewController, completion: @escaping (_ currentPassword: String, _ newPassword: String, _ confirmPassword: String) -> Void) {
         
         let alertController = UIAlertController(
-            title: "Change Password",
+            title: AppConstants.AlertFactory.changePassAlertTitleText,
             message: nil,
             preferredStyle: .alert
         )
 
         alertController.addTextField { textField in
-            textField.placeholder = "Enter current password"
+            textField.placeholder = AppConstants.AlertFactory.enterCurrentPassTFPlaceholderText
             textField.isSecureTextEntry = true
             textField.delegate = UITextField.noSpacesDelegate
         }
 
         alertController.addTextField { textField in
-            textField.placeholder = "Enter new password"
+            textField.placeholder = AppConstants.AlertFactory.enterNewPassTFPlaceholderText
             textField.isSecureTextEntry = true
             textField.delegate = UITextField.noSpacesDelegate
         }
 
         alertController.addTextField { textField in
-            textField.placeholder = "Confirm new password"
+            textField.placeholder = AppConstants.AlertFactory.confirmNewPassTFPlaceholderText
             textField.isSecureTextEntry = true
             textField.delegate = UITextField.noSpacesDelegate
         }
 
         let confirmAction = UIAlertAction(
-            title: "Change",
+            title: AppConstants.AlertFactory.changeButtonText,
             style: .default
         ) { _ in
             let currentPassword = alertController.textFields?[0].text ?? ""
@@ -79,7 +79,7 @@ final class AlertFactory {
         }
 
         let cancelAction = UIAlertAction(
-            title: "Cancel",
+            title: AppConstants.AlertFactory.cancelButtonText,
             style: .cancel
         )
 
@@ -91,14 +91,14 @@ final class AlertFactory {
     
     static func showLocationPermissionAlert(on viewController: UIViewController) {
         let alert = UIAlertController(
-            title: "Location Access Needed",
-            message: "Please allow location access in Settings for the app to work correctly.",
+            title: AppConstants.AlertFactory.locationPermissionAlertTitleText,
+            message: AppConstants.AlertFactory.locationPermissionAlertMessageText,
             preferredStyle: .alert
         )
 
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: AppConstants.AlertFactory.cancelButtonText, style: .cancel))
 
-        alert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { _ in
+        alert.addAction(UIAlertAction(title: AppConstants.AlertFactory.settingsButtonText, style: .default, handler: { _ in
             if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
                 UIApplication.shared.open(settingsURL)
             }

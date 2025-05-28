@@ -14,9 +14,9 @@ enum LoginValidationError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .emptyFields:
-            return "Please enter both email and password."
+            return AppConstants.ErrorDescription.emptyFields
         case .invalidEmailFormat:
-            return "Invalid email format."
+            return AppConstants.ErrorDescription.invalidEmailFormat
         }
     }
 }

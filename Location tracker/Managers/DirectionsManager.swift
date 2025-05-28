@@ -89,8 +89,8 @@ final class DirectionsManager {
     private func addStartAndEndMarkers(locations: [LocationInfoViewModel], on mapView: GMSMapView) {
         guard let first = locations.first, let last = locations.last else { return }
 
-        addLocationMarker(latitude: first.latitude, longitude: first.longitude, title: "Start", color: .green, on: mapView)
-        addLocationMarker(latitude: last.latitude, longitude: last.longitude, title: "End", color: .red, on: mapView)
+        addLocationMarker(latitude: first.latitude, longitude: first.longitude, title: AppConstants.LocationMarkerTitles.locationMarkerStart, color: .green, on: mapView)
+        addLocationMarker(latitude: last.latitude, longitude: last.longitude, title: AppConstants.LocationMarkerTitles.locationMarkerEnd, color: .red, on: mapView)
     }
 
     private func addDirectionArrows(locations: [LocationInfoViewModel], on mapView: GMSMapView) {
@@ -103,7 +103,7 @@ final class DirectionsManager {
 
             let arrow = GMSMarker()
             arrow.position = from
-            arrow.icon = UIImage(systemName: "arrowtriangle.up.fill")?.withTintColor(.systemBlue, renderingMode: .alwaysOriginal)
+            arrow.icon = UIImage(systemName: AppConstants.ImagesNames.arrowtriangleUpFill)?.withTintColor(.systemBlue, renderingMode: .alwaysOriginal)
             arrow.rotation = bearing
             arrow.groundAnchor = CGPoint(x: 0.5, y: 0.5)
             arrow.map = mapView

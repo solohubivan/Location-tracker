@@ -69,7 +69,7 @@ class ManagerPartVC: UIViewController {
         
         switch locations.count {
         case 0:
-            AlertFactory.showSimpleAlertWithOK(on: self, title: "No location data for this day", message: "")
+            AlertFactory.showSimpleAlertWithOK(on: self, title: AppConstants.AlertMessages.noLocationData, message: "")
         case 1:
             if let location = locations.first {
                 directionsManager.addLocationMarker(latitude: location.latitude, longitude: location.longitude, on: mapView)

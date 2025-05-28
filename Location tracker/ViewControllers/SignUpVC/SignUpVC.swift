@@ -50,14 +50,14 @@ class SignUpVC: UIViewController {
 
             switch result {
             case .success:
-                AlertFactory.showTemporaryAlert(on: self, message: "Successfully signed up!")
+                AlertFactory.showTemporaryAlert(on: self, message: AppConstants.AlertMessages.successfullySignedUp)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     self.resetTextFields()
                     self.dismiss(animated: true)
                 }
 
             case .failure(let error):
-                AlertFactory.showSimpleAlertWithOK(on: self, title: "Unsuccessful", message: error.localizedDescription)
+                AlertFactory.showSimpleAlertWithOK(on: self, title: AppConstants.AlertMessages.unsuccessful, message: error.localizedDescription)
             }
         }
     }
@@ -65,13 +65,13 @@ class SignUpVC: UIViewController {
     private func showSignUpLoading(isLoading: Bool) {
         if isLoading {
             signUpButton.isEnabled = false
-            signUpButton.setTitle("Signing Up...", for: .normal)
+            signUpButton.setTitle(AppConstants.ButtonsTitles.loginButtonLoadingText, for: .normal)
             
             setupSignUpActivityIndicator()
             signUpActivityIndicator.startAnimating()
         } else {
             signUpButton.isEnabled = true
-            signUpButton.setTitle("Sign Up", for: .normal)
+            signUpButton.setTitle(AppConstants.ButtonsTitles.singUpButtonText, for: .normal)
 
             signUpActivityIndicator.stopAnimating()
             signUpActivityIndicator.removeFromSuperview()
@@ -164,8 +164,8 @@ extension SignUpVC {
     }
     
     private func setupSignUpButton() {
-        signUpButton.setTitle("Sign Up", for: .normal)
-        signUpButton.titleLabel?.font = UIFont(name: "Roboto-Bold", size: 26)
+        signUpButton.setTitle(AppConstants.ButtonsTitles.singUpButtonText, for: .normal)
+        signUpButton.titleLabel?.font = UIFont(name: AppConstants.Fonts.robotoBold, size: 26)
     }
     
     private func setupSignUpActivityIndicator() {
@@ -184,7 +184,7 @@ extension SignUpVC {
         textField.delegate = self
         textField.layer.cornerRadius = 15
         textField.overrideUserInterfaceStyle = .light
-        textField.font = UIFont(name: "Roboto-Medium", size: 20)
+        textField.font = UIFont(name: AppConstants.Fonts.robotoMedium, size: 20)
         placeholderIndent(textField: textField)
     }
     
