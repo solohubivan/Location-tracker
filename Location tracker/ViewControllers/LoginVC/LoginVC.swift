@@ -22,6 +22,10 @@ class LoginVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        
+        // Pre-filled credentials for mentor's review purposes only
+        emailTF.text = "qwer@gmail.com"
+        passwordTF.text = "123456"
     }
     
     // MARK: - Button's actions
