@@ -31,25 +31,10 @@ class UserProfileVC: UIViewController {
         setupUserProfileImageView()
     }
     
-    // MARK: - Buttons actions
-    @IBAction private func changePassButtonTapped(_ sender: Any) {
-        handlePasswordChange()
-    }
-
-    @IBAction private func editProfileImageButtonTapped(_ sender: Any) {
-        photoLibraryManager = PhotoLibraryManager(presentingViewController: self, delegate: self)
-        photoLibraryManager?.requestAccessAndPresentPicker()
-    }
-    
-    @IBAction private func logoutButtonTapped(_ sender: Any) {
-        CacheManager().clear()
-        handleLogoutButtonTapped()
-    }
-    
     // MARK: - Private helper methods
     private func loadUserProfile() {
         
-        if let cached = CacheManager().load() {
+        if let cached = UserProfileCacheManager().load() {
             configureUI(with: cached)
         }
         
@@ -60,7 +45,7 @@ class UserProfileVC: UIViewController {
                 switch result {
                 case .success(let userData):
                     self.configureUI(with: userData)
-                    CacheManager().save(profile: userData)
+                    UserProfileCacheManager().save(profile: userData)
                 case .failure(let error):
                     AlertFactory.showSimpleAlertWithOK(
                         on: self,
@@ -109,13 +94,12 @@ class UserProfileVC: UIViewController {
     private func handleLogoutButtonTapped() {
         firebaseManager.logoutUser { [weak self] result in
             DispatchQueue.main.async {
+                guard let self = self else { return }
+                
                 switch result {
                 case .success:
-                    let loginVC = LoginVC()
-                    loginVC.modalPresentationStyle = .fullScreen
-                    self?.present(loginVC, animated: true)
+                    AppNavigator.showLoginVC(from: self)
                 case .failure(let error):
-                    guard let self = self else { return }
                     AlertFactory.showSimpleAlertWithOK(on: self, title: AppConstants.AlertMessages.somethingWentWrong, message: error.localizedDescription)
                 }
             }
@@ -147,6 +131,21 @@ class UserProfileVC: UIViewController {
                 }
             }
         }
+    }
+    
+    // MARK: - Buttons actions
+    @IBAction private func changePassButtonTapped(_ sender: Any) {
+        handlePasswordChange()
+    }
+
+    @IBAction private func editProfileImageButtonTapped(_ sender: Any) {
+        photoLibraryManager = PhotoLibraryManager(presentingViewController: self, delegate: self)
+        photoLibraryManager?.requestAccessAndPresentPicker()
+    }
+    
+    @IBAction private func logoutButtonTapped(_ sender: Any) {
+        UserProfileCacheManager().clear()
+        handleLogoutButtonTapped()
     }
 }
     

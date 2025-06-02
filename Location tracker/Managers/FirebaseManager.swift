@@ -55,9 +55,13 @@ final class FirebaseManager {
             "longitude": viewModel.longitude,
             "timestamp": ISO8601DateFormatter().string(from: viewModel.date)
         ]
-
+        
         ref.setValue(data) { error, _ in
-            error != nil ? completion(.failure(error!)) : completion(.success(()))
+            guard let error = error else {
+                completion(.success(()))
+                return
+            }
+            completion(.failure(error))
         }
     }
 
@@ -70,13 +74,17 @@ final class FirebaseManager {
         let credential = EmailAuthProvider.credential(withEmail: email, password: currentPassword)
 
         user.reauthenticate(with: credential) { _, error in
-            if let error = error {
-                completion(.failure(error))
+            guard error == nil else {
+                completion(.failure(error!))
                 return
             }
-
+            
             user.updatePassword(to: newPassword) { error in
-                error != nil ? completion(.failure(error!)) : completion(.success(()))
+                guard let error = error else {
+                    completion(.success(()))
+                    return
+                }
+                completion(.failure(error))
             }
         }
     }
@@ -160,15 +168,19 @@ final class FirebaseManager {
     ) {
         switch ValidationManager.validateLogin(email: email, password: password) {
         case .success:
-            
-            loginUser(email: email!, password: password!) { [weak self] result in
+            guard let email = email, let password = password else {
+                completion(.failure(userAuthError))
+                return
+            }
+
+            loginUser(email: email, password: password) { [weak self] result in
                 guard let self = self else { return }
-                
+
                 switch result {
                 case .success:
                     self.fetchCurrentUserProfile { profileResult in
                         if case .success(let profile) = profileResult {
-                            CacheManager().save(profile: profile)
+                            UserProfileCacheManager().save(profile: profile)
                         }
                     }
                     completion(.success(()))
@@ -199,13 +211,21 @@ final class FirebaseManager {
     private func saveProfileImageURL(userId: String, imageURL: URL, completion: @escaping (Result<URL, Error>) -> Void) {
         let ref = Database.database().reference().child("users").child(userId).child("profileImageURL")
         ref.setValue(imageURL.absoluteString) { error, _ in
-            error != nil ? completion(.failure(error!)) : completion(.success(imageURL))
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(imageURL))
+            }
         }
     }
 
     private func loginUser(email: String, password: String, completion: @escaping (Result<Void, Error>) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { _, error in
-            error != nil ? completion(.failure(error!)) : completion(.success(()))
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
         }
     }
 
@@ -231,9 +251,13 @@ final class FirebaseManager {
             "name": name,
             "email": email
         ]
-
+        
         ref.setValue(userData) { error, _ in
-            error != nil ? completion(.failure(error!)) : completion(.success(()))
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
         }
     }
 }

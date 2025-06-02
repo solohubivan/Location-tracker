@@ -6,7 +6,7 @@
 //
 import UIKit
 
-final class CacheManager {
+final class UserProfileCacheManager {
     
     private let key = "CachedUserProfileKey"
 

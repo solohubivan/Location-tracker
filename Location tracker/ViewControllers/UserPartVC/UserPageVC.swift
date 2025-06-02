@@ -1,5 +1,5 @@
 //
-//  UserPartVC.swift
+//  UserPageVC.swift
 //  Location tracker
 //
 //  Created by Ivan Solohub on 06.05.2025.
@@ -9,7 +9,7 @@ import UIKit
 import CoreLocation
 import GoogleMaps
 
-class UserPartVC: UIViewController {
+class UserPageVC: UIViewController {
 
     @IBOutlet private weak var statusBarAndSwitchView: UIView!
     @IBOutlet private weak var sharingLocationStatusView: UIView!
@@ -29,24 +29,6 @@ class UserPartVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-    }
-    
-    // MARK: - actions
-    @IBAction private func sharingSelfLocationSwitcher(_ sender: Any) {
-        if sharingLocationSwitch.isOn {
-            locationManager.startUpdatingLocation()
-            updateSharingLocationStatusUI(isSharing: true)
-        } else {
-            locationManager.stopUpdatingLocation()
-            updateSharingLocationStatusUI(isSharing: false)
-        }
-    }
-    
-    @IBAction private func locationSettingsButtonTapped(_ sender: Any) {
-        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
-        if UIApplication.shared.canOpenURL(settingsURL) {
-            UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
-        }
     }
     
     // MARK: - Private Helper Methods
@@ -115,10 +97,28 @@ class UserPartVC: UIViewController {
         sharingLocationStatusView.isHidden = !isAuthorized
         sharingLocationStatusLabel.text = isAuthorized ? AppConstants.UserPartVC.offSharingLocationStatusLabelText : AppConstants.UserPartVC.disabledSharingLocationStatusLabelText
     }
+    
+    // MARK: - actions
+    @IBAction private func sharingSelfLocationSwitcher(_ sender: Any) {
+        if sharingLocationSwitch.isOn {
+            locationManager.startUpdatingLocation()
+            updateSharingLocationStatusUI(isSharing: true)
+        } else {
+            locationManager.stopUpdatingLocation()
+            updateSharingLocationStatusUI(isSharing: false)
+        }
+    }
+    
+    @IBAction private func locationSettingsButtonTapped(_ sender: Any) {
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+        if UIApplication.shared.canOpenURL(settingsURL) {
+            UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+        }
+    }
 }
 
 // MARK: - CLLocationManagerDelegate
-extension UserPartVC: CLLocationManagerDelegate {
+extension UserPageVC: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let newLocation = locations.last else { return }
@@ -143,7 +143,7 @@ extension UserPartVC: CLLocationManagerDelegate {
 }
 
 // MARK: - Setup UI
-extension UserPartVC {
+extension UserPageVC {
     
     private func setupUI() {
         setupLocationManager()

@@ -7,7 +7,7 @@
 
 final class ValidationManager {
     
-    static func validateLogin(email: String?, password: String?) -> Result<Void, LoginValidationError> {
+    static func validateLogin(email: String?, password: String?) -> Result<Void, ValidationRules> {
         guard let email = email, !email.isEmpty,
               let password = password, !password.isEmpty else {
             return .failure(.emptyFields)
@@ -20,15 +20,15 @@ final class ValidationManager {
         return .success(())
     }
     
-    static func validateSignUp(email: String?, password: String?, confirmPassword: String?) -> Result<Void, SignUpUserValidationError> {
+    static func validateSignUp(email: String?, password: String?, confirmPassword: String?) -> Result<Void, ValidationRules> {
         guard let email = email, !email.isEmpty, !email.contains(" ") else {
             return .failure(.emptyEmail)
         }
 
         return validatePassword(password, confirmPassword)
     }
-
-    static func validatePassword(_ password: String?, _ confirmPassword: String?) -> Result<Void, SignUpUserValidationError> {
+    
+    static func validatePassword(_ password: String?, _ confirmPassword: String?) -> Result<Void, ValidationRules> {
         guard let password = password, !password.isEmpty,
               let confirmPassword = confirmPassword, !confirmPassword.isEmpty else {
             return .failure(.emptyFields)
@@ -48,5 +48,4 @@ final class ValidationManager {
 
         return .success(())
     }
-    
 }

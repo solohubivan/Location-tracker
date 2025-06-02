@@ -13,7 +13,7 @@ final class PasswordValidator {
         current: String,
         new: String,
         confirm: String
-    ) -> Result<Void, PasswordValidationErrors> {
+    ) -> Result<Void, ValidationRules> {
         
         guard !current.isEmpty, !new.isEmpty, !confirm.isEmpty else {
             return .failure(.emptyFields)

@@ -1,5 +1,5 @@
 //
-//  ManagerPartVC.swift
+//  ManagerPageVC.swift
 //  Location tracker
 //
 //  Created by Ivan Solohub on 06.05.2025.
@@ -8,7 +8,7 @@
 import UIKit
 import GoogleMaps
 
-class ManagerPartVC: UIViewController {
+class ManagerPageVC: UIViewController {
     
     @IBOutlet private weak var datePicker: UIDatePicker!
     @IBOutlet private weak var refreshDataButton: UIButton!
@@ -23,24 +23,6 @@ class ManagerPartVC: UIViewController {
         setupUI()
         showCurrentDayLocationInfo()
     }
-
-    // MARK: - Actions
-    @IBAction private func datePickerValueChanged(_ sender: Any) {
-        dismissDatePicker()
-        setLoading(true)
-        
-        let selectedDate = datePicker.date
-        firebaseManager.fetchUserLocations(for: selectedDate) { [weak self] locations in
-            self?.setLoading(false)
-            self?.displayLocations(locations)
-        }
-    }
-    
-    @IBAction private func refreshDataButtonTapped(_ sender: Any) {
-        refreshDataButton.animateRotation()
-        datePicker.date = .now
-        showCurrentDayLocationInfo()
-    }
     
     // MARK: - Private helper methods
     private func setLoading(_ isLoading: Bool) {
@@ -51,9 +33,8 @@ class ManagerPartVC: UIViewController {
     }
     
     private func dismissDatePicker() {
-        if let presented = self.presentedViewController {
-            presented.dismiss(animated: true)
-        }
+        guard let presented = self.presentedViewController else { return }
+        presented.dismiss(animated: true)
     }
     
     private func showCurrentDayLocationInfo() {
@@ -79,11 +60,11 @@ class ManagerPartVC: UIViewController {
                 locations.forEach {
                     directionsManager.addLocationMarker(latitude: $0.latitude, longitude: $0.longitude, on: mapView)
                 }
-
-                if let first = locations.first {
-                    let coordinate = CLLocationCoordinate2D(latitude: first.latitude, longitude: first.longitude)
-                    directionsManager.updateMapCamera(to: coordinate, mapView: mapView, setZoom: 14)
-                }
+                
+                guard let first = locations.first else { return }
+                let coordinate = CLLocationCoordinate2D(latitude: first.latitude, longitude: first.longitude)
+                directionsManager.updateMapCamera(to: coordinate, mapView: mapView, setZoom: 14)
+                
             } else {
                 directionsManager.setupTrajectory(
                     on: mapView,
@@ -94,10 +75,28 @@ class ManagerPartVC: UIViewController {
             }
         }
     }
+    
+    // MARK: - Actions
+    @IBAction private func datePickerValueChanged(_ sender: Any) {
+        dismissDatePicker()
+        setLoading(true)
+        
+        let selectedDate = datePicker.date
+        firebaseManager.fetchUserLocations(for: selectedDate) { [weak self] locations in
+            self?.setLoading(false)
+            self?.displayLocations(locations)
+        }
+    }
+    
+    @IBAction private func refreshDataButtonTapped(_ sender: Any) {
+        refreshDataButton.animateRotation()
+        datePicker.date = .now
+        showCurrentDayLocationInfo()
+    }
 }
 
 // MARK: - Setup UI
-extension ManagerPartVC {
+extension ManagerPageVC {
     
     private func setupUI() {
         setupGoogleMap()

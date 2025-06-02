@@ -9,8 +9,8 @@ import UIKit
 
 class MainTabBarController: UITabBarController {
     
-    private let userPartVC = UserPartVC()
-    private let managerPartVC = ManagerPartVC()
+    private let userPartVC = UserPageVC()
+    private let managerPartVC = ManagerPageVC()
     private let userProfileVC = UserProfileVC()
     
     override func viewDidLoad() {

@@ -23,11 +23,6 @@ class SignUpVC: UIViewController {
         setupUI()
     }
     
-    // MARK: - Button's action
-    @IBAction func singUpButtonTapped(_ sender: Any) {
-        signUpUser()
-    }
-    
     // MARK: - Private helper methods
     private func signUpUser() {
         showSignUpLoading(isLoading: true)
@@ -53,9 +48,8 @@ class SignUpVC: UIViewController {
                 AlertFactory.showTemporaryAlert(on: self, message: AppConstants.AlertMessages.successfullySignedUp)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     self.resetTextFields()
-                    self.dismiss(animated: true)
+                    AppNavigator.showMainTabBar(from: self)
                 }
-
             case .failure(let error):
                 AlertFactory.showSimpleAlertWithOK(on: self, title: AppConstants.AlertMessages.unsuccessful, message: error.localizedDescription)
             }
@@ -106,6 +100,11 @@ class SignUpVC: UIViewController {
         userEmailTF.text = ""
         createPasswordTF.text = ""
         confirmPasswordTF.text = ""
+    }
+    
+    // MARK: - Button's action
+    @IBAction private func singUpButtonTapped(_ sender: Any) {
+        signUpUser()
     }
 }
 

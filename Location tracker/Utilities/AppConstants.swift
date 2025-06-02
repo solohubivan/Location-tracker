@@ -66,9 +66,8 @@ enum AppConstants {
     }
     
     enum ErrorDescription {
-        static let emptyFields: String = "Please enter both email and password."
+        static let emptyFields: String = "Please fill in all fields."
         static let invalidEmailFormat: String = "Invalid email format."
-        static let emptyFields2: String = "Please fill in all fields."
         static let passwordsDoNotMatch: String = "Passwords do not match."
         static let passwordTooShort: String = "Password must be at least 6 characters."
         static let passwordContainsSpaces: String = "Password must not contain spaces."

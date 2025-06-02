@@ -28,9 +28,8 @@ final class PhotoLibraryManager: NSObject {
             presentImagePicker()
             
         case .denied, .restricted:
-            if let viewController = presentingViewController {
-                AlertFactory.showSettingsAlert(on: viewController)
-            }
+            guard let viewController = presentingViewController else { return }
+            AlertFactory.showSettingsAlert(on: viewController)
             
         case .notDetermined:
             PHPhotoLibrary.requestAuthorization { [weak self] newStatus in

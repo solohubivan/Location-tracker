@@ -22,19 +22,6 @@ class LoginVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        
-        // Pre-filled credentials for mentor's review purposes only
-        emailTF.text = "qwer@gmail.com"
-        passwordTF.text = "123456"
-    }
-    
-    // MARK: - Button's actions
-    @IBAction func loginButtonTapped(_ sender: Any) {
-        logInUser()
-    }
-    
-    @IBAction func singUpButtonTapped(_ sender: Any) {
-        openSignUpVC()
     }
     
     // MARK: - Private helper methods
@@ -58,7 +45,7 @@ class LoginVC: UIViewController {
             case .success:
                 AlertFactory.showTemporaryAlert(on: self, message: AppConstants.AlertMessages.successfullyLoggedIn)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    self.openMainTabBarController()
+                    AppNavigator.showMainTabBar(from: self)
                 }
             case .failure(let error):
                 AlertFactory.showSimpleAlertWithOK(on: self, title: AppConstants.AlertMessages.loginFailed, message: error.localizedDescription)
@@ -82,16 +69,13 @@ class LoginVC: UIViewController {
         }
     }
     
-    private func openMainTabBarController() {
-        let tabBarVC = MainTabBarController()
-        tabBarVC.modalPresentationStyle = .fullScreen
-        present(tabBarVC, animated: false)
+    // MARK: - Button's actions
+    @IBAction private func loginButtonTapped(_ sender: Any) {
+        logInUser()
     }
     
-    private func openSignUpVC() {
-        let vc = SignUpVC()
-        vc.modalPresentationStyle = .formSheet
-        present(vc, animated: true)
+    @IBAction private func singUpButtonTapped(_ sender: Any) {
+        AppNavigator.showSignUpVC(from: self)
     }
 }
 
