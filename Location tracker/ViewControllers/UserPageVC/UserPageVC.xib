@@ -36,18 +36,21 @@
                         </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="sharing location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qRN-U0-nWc" userLabel="sharingLocationStatusLabel">
                             <rect key="frame" x="106" y="16.666666666666671" width="121" height="21"/>
+                            <accessibility key="accessibilityConfiguration" identifier="SharingLocationStatusLabelId"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <color key="textColor" red="0.16995369771383573" green="0.60351092847683552" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start sharing" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hfn-wT-fq6">
                             <rect key="frame" x="87.666666666666657" y="53.666666666666671" width="97.666666666666657" height="20.333333333333329"/>
+                            <accessibility key="accessibilityConfiguration" identifier="SwitcherStatusLabelId"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <color key="textColor" red="0.094719188529663989" green="0.55465906114812069" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <switch opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="rUF-kJ-k6Q">
                             <rect key="frame" x="201.33333333333334" y="48.333333333333329" width="51" height="31"/>
+                            <accessibility key="accessibilityConfiguration" identifier="SharingLocationSwitchId"/>
                             <connections>
                                 <action selector="sharingSelfLocationSwitcher:" destination="-1" eventType="valueChanged" id="Dsg-tj-4jS"/>
                             </connections>
@@ -69,6 +72,7 @@
                         </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <accessibility key="accessibilityConfiguration" identifier="StatusBarAndSwitchViewId"/>
                     <constraints>
                         <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="qRN-U0-nWc" secondAttribute="trailing" constant="20" id="8LC-r8-qzg"/>
                         <constraint firstAttribute="trailing" secondItem="aMY-Ba-m2N" secondAttribute="trailing" constant="16" id="HCg-Ox-Duc"/>

@@ -25,9 +25,11 @@
             <subviews>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="loginVCBackgroundImg" translatesAutoresizingMaskIntoConstraints="NO" id="fBV-iG-HlM">
                     <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                    <accessibility key="accessibilityConfiguration" identifier="LoginVCBackgroundImgId"/>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="MainTitleLabel" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XH6-yR-JWH">
                     <rect key="frame" x="20" y="158" width="353" height="20"/>
+                    <accessibility key="accessibilityConfiguration" identifier="MainTitleLabelId"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <nil key="highlightedColor"/>
@@ -38,6 +40,7 @@
                         <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="CSs-Ps-jHm">
                             <rect key="frame" x="0.0" y="0.0" width="333" height="50"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <accessibility key="accessibilityConfiguration" identifier="LoginVCEmailTFId"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="50" id="oJR-hJ-PeG"/>
                             </constraints>
@@ -47,6 +50,7 @@
                         <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="CNq-lb-odT">
                             <rect key="frame" x="0.0" y="66" width="333" height="50"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <accessibility key="accessibilityConfiguration" identifier="LoginVCPassTFId"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="50" id="PW0-H9-dRG"/>
                             </constraints>
@@ -55,6 +59,7 @@
                         </textField>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ROc-im-poa">
                             <rect key="frame" x="145.66666666666666" y="136" width="42" height="50"/>
+                            <accessibility key="accessibilityConfiguration" identifier="LogInButtonId"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="50" id="qza-65-aLy"/>
                             </constraints>
@@ -68,12 +73,14 @@
                         </button>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="singUpLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z56-R9-EMf">
                             <rect key="frame" x="0.0" y="202" width="96" height="20.333333333333343"/>
+                            <accessibility key="accessibilityConfiguration" identifier="LoginVCSingUpLabelId"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GhK-PA-kBG">
                             <rect key="frame" x="106" y="194.66666666666663" width="96" height="35"/>
+                            <accessibility key="accessibilityConfiguration" identifier="LoginVCSingUpButtonId"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="35" id="I5i-v6-cH5"/>
                             </constraints>

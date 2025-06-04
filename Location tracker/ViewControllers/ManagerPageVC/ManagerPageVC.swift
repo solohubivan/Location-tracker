@@ -102,6 +102,7 @@ extension ManagerPageVC {
         setupGoogleMap()
         datePicker.maximumDate = .now
         largeActivityIndicator.isHidden = true
+        datePicker.accessibilityIdentifier = "DatePickerId"
     }
     
     private func setupGoogleMap() {

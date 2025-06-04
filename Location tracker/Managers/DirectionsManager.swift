@@ -128,3 +128,12 @@ private extension Double {
     var degreesToRadians: Double { self * .pi / 180 }
     var radiansToDegrees: Double { self * 180 / .pi }
 }
+
+#if DEBUG
+extension DirectionsManager {
+
+    func testFilterNearbyLocations(_ locations: [LocationInfoViewModel], distance: Double) -> [LocationInfoViewModel] {
+        return filterNearbyLocations(locations, customizedDistance: distance)
+    }
+}
+#endif

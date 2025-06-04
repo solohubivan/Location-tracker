@@ -21,7 +21,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         
-        if Auth.auth().currentUser != nil {
+        if CommandLine.arguments.contains("-UITestsAutoLogin") {
+            autoLoginForUITests()
+        } else if Auth.auth().currentUser != nil {
             showMain()
         } else {
             showLogin()
@@ -29,6 +31,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     // MARK: private methods helpers
+    private func autoLoginForUITests() {
+        let email = "qwer@gmail.com"
+        let password = "12345678"
+
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
+            if error != nil {
+                self?.showLogin()
+            } else {
+                self?.showMain()
+            }
+        }
+    }
+    
     private func showMain() {
         window?.rootViewController = MainTabBarController()
         window?.makeKeyAndVisible()

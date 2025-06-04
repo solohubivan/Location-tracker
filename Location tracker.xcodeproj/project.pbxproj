@@ -219,6 +219,7 @@
 					};
 					22F9D7BA2DC54ADC00C856E8 = {
 						CreatedOnToolsVersion = 16.3;
+						LastSwiftMigration = 1640;
 						TestTargetID = 22F9D79A2DC54ADB00C856E8;
 					};
 				};
@@ -533,6 +534,7 @@
 		22F9D7CD2DC54ADC00C856E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4D98645N8M;
@@ -541,6 +543,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Solohub.Location-trackerUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = "Location tracker";
@@ -550,6 +553,7 @@
 		22F9D7CE2DC54ADC00C856E8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4D98645N8M;

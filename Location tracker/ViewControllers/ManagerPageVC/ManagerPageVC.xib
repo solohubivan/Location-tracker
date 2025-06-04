@@ -38,6 +38,7 @@
                             </datePicker>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uzB-Lu-RIm" userLabel="refreshDataButton">
                                 <rect key="frame" x="30" y="10" width="30" height="20"/>
+                                <accessibility key="accessibilityConfiguration" identifier="RefreshDataButtonId"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="30" id="6OC-cP-H5L"/>
                                     <constraint firstAttribute="height" constant="20" id="pVJ-Mm-lFn"/>
@@ -60,6 +61,7 @@
                                 <color key="color" red="0.20392158630000001" green="0.40784314269999999" blue="0.68235301969999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             </activityIndicatorView>
                         </subviews>
+                        <accessibility key="accessibilityConfiguration" identifier="ManagerPageToolbarViewId"/>
                         <constraints>
                             <constraint firstItem="5DL-zt-edh" firstAttribute="leading" secondItem="x73-pZ-XZj" secondAttribute="trailing" constant="20" id="7Bg-ms-zVG"/>
                             <constraint firstItem="uzB-Lu-RIm" firstAttribute="leading" secondItem="x88-Hs-52Z" secondAttribute="leading" constant="30" id="8di-I5-uDo"/>

@@ -110,11 +110,16 @@ class UserProfileVC: UIViewController {
         AlertFactory.showChangePasswordAlert(on: self) { [weak self] currentPassword, newPassword, confirmPassword in
             guard let self = self else { return }
 
-            switch PasswordValidator.validatePasswordChange(current: currentPassword, new: newPassword, confirm: confirmPassword) {
+            switch ValidationManager.validatePassword(newPassword, confirmPassword) {
             case .success:
-                self.performPasswordChange(currentPassword: currentPassword, newPassword: newPassword)    
-            case .failure(_):
-                AlertFactory.showSimpleAlertWithOK(on: self, title: AppConstants.AlertMessages.failed, message: AppConstants.AlertMessages.inputedWrongCurrentPass)
+                self.performPasswordChange(currentPassword: currentPassword, newPassword: newPassword)
+
+            case .failure(let error):
+                AlertFactory.showSimpleAlertWithOK(
+                    on: self,
+                    title: AppConstants.AlertMessages.failed,
+                    message: error.localizedDescription
+                )
             }
         }
     }

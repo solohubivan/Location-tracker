@@ -31,6 +31,7 @@
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter your name here" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Jry-Pr-H8M" userLabel="input name TF">
                                 <rect key="frame" x="20" y="150" width="353" height="52"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <accessibility key="accessibilityConfiguration" identifier="SignUpUserNameTFId"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="52" id="P8h-p4-bbT"/>
                                 </constraints>
@@ -40,6 +41,7 @@
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter your E-mail" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="P7V-3F-Voy" userLabel="input email TF">
                                 <rect key="frame" x="20" y="232" width="353" height="52"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <accessibility key="accessibilityConfiguration" identifier="SignUpUserEmailTFId"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="52" id="WDJ-Cy-vjv"/>
                                 </constraints>
@@ -49,6 +51,7 @@
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Create your password" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="yMN-O7-MAg" userLabel="create password TF">
                                 <rect key="frame" x="20" y="314" width="353" height="52"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <accessibility key="accessibilityConfiguration" identifier="SignUpCreatePassTFId"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="52" id="gLO-VH-1XG"/>
                                 </constraints>
@@ -58,6 +61,7 @@
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Confirm your password" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Y9t-YE-PHQ" userLabel="confirm pass TF">
                                 <rect key="frame" x="20" y="396" width="353" height="52"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <accessibility key="accessibilityConfiguration" identifier="SignUpConfirmPassTFId"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="52" id="OMJ-aR-YR3"/>
                                 </constraints>
@@ -66,6 +70,7 @@
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fdH-zV-JW8" userLabel="SignUp Button">
                                 <rect key="frame" x="148.66666666666666" y="488" width="96" height="30"/>
+                                <accessibility key="accessibilityConfiguration" identifier="SingUpVCSingUpButtonId"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" title="SignUpButton">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -76,6 +81,7 @@
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <accessibility key="accessibilityConfiguration" identifier="SignUpVCBlurViewId"/>
                         <constraints>
                             <constraint firstItem="Y9t-YE-PHQ" firstAttribute="leading" secondItem="2pl-G9-Nv5" secondAttribute="leading" constant="20" id="73r-kb-gjP"/>
                             <constraint firstItem="yMN-O7-MAg" firstAttribute="leading" secondItem="2pl-G9-Nv5" secondAttribute="leading" constant="20" id="FLd-SK-rdN"/>

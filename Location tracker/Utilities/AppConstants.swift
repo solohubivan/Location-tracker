@@ -36,7 +36,6 @@ enum AppConstants {
         static let uploadFailed: String = "Upload Failed"
         static let somethingWentWrong: String = "Something went wrong"
         static let failed: String = "Failed"
-        static let inputedWrongCurrentPass: String = "Inputed wrong current password"
         static let passChangedSuccessfully: String = "Password changed successfully!"
     }
     
