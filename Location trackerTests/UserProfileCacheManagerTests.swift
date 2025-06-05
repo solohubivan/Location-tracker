@@ -15,16 +15,17 @@ final class UserProfileCacheManagerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         cacheManager = UserProfileCacheManager()
-        cacheManager?.clear()
+        _ = try? XCTUnwrap(cacheManager).clear()
     }
     
-    func testSaveAndLoadUserProfile() {
+    func testSaveAndLoadUserProfile() throws {
         // Given
         let profile = UserProfileViewModel(userName: "Ivan", email: "ivan@example.com", imageURL: "http://image.com/1.png")
+        let manager = try XCTUnwrap(cacheManager)
 
         // When
-        cacheManager?.save(profile: profile)
-        let loaded = cacheManager?.load()
+        manager.save(profile: profile)
+        let loaded = manager.load()
 
         // Then
         XCTAssertNotNil(loaded)
@@ -33,22 +34,24 @@ final class UserProfileCacheManagerTests: XCTestCase {
         XCTAssertEqual(loaded?.imageURL, profile.imageURL)
     }
     
-    func testLoadWhenNoProfileSavedReturnsNil() {
+    func testLoadWhenNoProfileSavedReturnsNil() throws {
         // When
-        let loaded = cacheManager?.load()
+        let manager = try XCTUnwrap(cacheManager)
+        let loaded = manager.load()
         
         // Then
         XCTAssertNil(loaded)
     }
     
-    func testClearRemovesSavedProfile() {
+    func testClearRemovesSavedProfile() throws {
         // Given
+        let manager = try XCTUnwrap(cacheManager)
         let profile = UserProfileViewModel(userName: "Ivan", email: "ivan@example.com", imageURL: "http://image.com/1.png")
-        cacheManager?.save(profile: profile)
+        manager.save(profile: profile)
         
         // When
-        cacheManager?.clear()
-        let loaded = cacheManager?.load()
+        manager.clear()
+        let loaded = manager.load()
         
         // Then
         XCTAssertNil(loaded)

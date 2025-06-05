@@ -17,7 +17,7 @@ final class DirectionsManagerTests: XCTestCase {
         directionsManager = DirectionsManager()
     }
     
-    func testAreAllPointsCloseWhenAllWithinThresholdReturnsTrue() {
+    func testAreAllPointsCloseWhenAllWithinThresholdReturnsTrue() throws {
         // Given
         let locations = [
             LocationInfoViewModel(latitude: 50.0, longitude: 30.0, date: Date()),
@@ -27,14 +27,14 @@ final class DirectionsManagerTests: XCTestCase {
         let thresholdMeters = 100.0
 
         // When
-        guard let manager = directionsManager else { return }
+        let manager = try XCTUnwrap(directionsManager, "directionsManager must be initialized")
         let result = manager.areAllPointsClose(locations, thresholdInMeters: thresholdMeters)
 
         // Then
         XCTAssertTrue(result)
     }
 
-    func testAreAllPointsCloseWhenSomeOutsideThresholdReturnsFalse() {
+    func testAreAllPointsCloseWhenSomeOutsideThresholdReturnsFalse() throws {
         // Given
         let locations = [
             LocationInfoViewModel(latitude: 50.0, longitude: 30.0, date: Date()),
@@ -43,14 +43,14 @@ final class DirectionsManagerTests: XCTestCase {
         let threshold = 100.0
 
         // When
-        guard let manager = directionsManager else { return }
+        let manager = try XCTUnwrap(directionsManager, "directionsManager must be initialized")
         let result = manager.areAllPointsClose(locations, thresholdInMeters: threshold)
 
         // Then
         XCTAssertFalse(result)
     }
     
-    func testTestFilterNearbyLocationsRemovesClosePoints() {
+    func testTestFilterNearbyLocationsRemovesClosePoints() throws {
         // Given
         let now = Date()
         let locations = [
@@ -61,13 +61,14 @@ final class DirectionsManagerTests: XCTestCase {
         ]
 
         // When
-        let result = directionsManager?.testFilterNearbyLocations(locations, distance: 10)
+        let manager = try XCTUnwrap(directionsManager, "directionsManager must be initialized")
+        let result = manager.testFilterNearbyLocations(locations, distance: 10)
 
         // Then
-        XCTAssertEqual(result?.count, 3)
+        XCTAssertEqual(result.count, 3)
     }
     
-    func testTestFilterNearbyLocationsRemovesAllMiddlePointsIfTooClose() {
+    func testTestFilterNearbyLocationsRemovesAllMiddlePointsIfTooClose() throws {
         // Given
         let now = Date()
         let locations = [
@@ -80,9 +81,10 @@ final class DirectionsManagerTests: XCTestCase {
         ]
 
         // When
-        let result = directionsManager?.testFilterNearbyLocations(locations, distance: 100)
+        let manager = try XCTUnwrap(directionsManager, "directionsManager must be initialized")
+        let result = manager.testFilterNearbyLocations(locations, distance: 100)
         
         // Then
-        XCTAssertEqual(result?.count, 2, "Expected only first and last point to remain")
+        XCTAssertEqual(result.count, 2, "Expected only first and last point to remain")
     }
 }
